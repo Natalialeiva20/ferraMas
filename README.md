@@ -1,7 +1,13 @@
 # proyecto FerraMas
 
-[index](#index)
-[instalacion](#instalacion)
+## Índice
+- [proyecto FerraMas](#proyecto-ferramas)
+  - [Índice](#índice)
+  - [instalacion](#instalacion)
+    - [venv](#venv)
+    - [instalacion de requerimientos y bd](#instalacion-de-requerimientos-y-bd)
+    - [iniciar servidor](#iniciar-servidor)
+  - [proyecto django](#proyecto-django)
 
 ## instalacion
 
