@@ -27,8 +27,9 @@ luego de crear la venv se tiene que activar con el siguiente comando
 
 iniciar java
 
+entrar a la carpeta target del proyecto gestion y ejecutar el siguiente comando para iniciar el proyecto gestion
 ```powershell
-PS C:\Users\diego\Downloads\gestion\gestion\target> java -jar .\gestion-0.0.1-SNAPSHOT.jar
+PS \gestion\gestion\target> java -jar .\gestion-0.0.1-SNAPSHOT.jar
 ```
 
 actualizar pip
