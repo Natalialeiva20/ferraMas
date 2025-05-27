@@ -6,27 +6,34 @@ import jakarta.persistence.*;
 @Table(name="cliente")
 public class Cliente {
     @Id
-    private String rut;
+    @Column(name="rutcliente")
+    private String rutcliente;
+    
+    @Column(name="nombrecliente")
     private String nombrecliente;
+    
+    @Column(name="apellidocliente")
     private String apellidocliente;
+    
+    @Column(name="idcomuna")
     private int idcomuna;
 
     public Cliente() {
     }
 
-    public Cliente(String rut, String nombrecliente, String apellidocliente, int idcomuna) {
-        this.rut = rut;
+    public Cliente(String rutcliente, String nombrecliente, String apellidocliente, int idcomuna) {
+        this.rutcliente = rutcliente;
         this.nombrecliente = nombrecliente;
         this.apellidocliente = apellidocliente;
         this.idcomuna = idcomuna;
     }
 
-    public String getRut() {
-        return rut;
+    public String getRutcliente() {
+        return rutcliente;
     }
 
-    public void setRut(String rut) {
-        this.rut = rut;
+    public void setRutcliente(String rutcliente) {
+        this.rutcliente = rutcliente;
     }
 
     public String getNombrecliente() {
