@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import com.rrhh.gestion.dto.EmpleadoDTO;
+import org.springframework.http.ResponseEntity;
 @RestController
 @RequestMapping("/api/empleados/")
 public class EmpleadoController {
@@ -29,7 +30,14 @@ public class EmpleadoController {
         return empleadosDTO;
     }
 
-    @PostMapping("/empleado")
+    @GetMapping("/{id}")
+    public ResponseEntity<Empleado> obtenerEmpleado(@PathVariable String id) {
+        return empleadoRepository.findById(id).
+                map(empleado -> ResponseEntity.ok().body(empleado)).
+                orElseGet(()->ResponseEntity.notFound().build());
+    }
+    
+    @PostMapping
     public Empleado crearEmpleado(@RequestBody Empleado empleado) {
         return empleadoRepository.save(empleado);
     }
