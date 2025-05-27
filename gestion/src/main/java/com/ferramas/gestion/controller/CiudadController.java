@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 
 @RestController
-@RequestMapping("/api/ciudades")
+@RequestMapping("/api/ciudades/")
 public class CiudadController {
 
     @Autowired

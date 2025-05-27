@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 
 @RestController
-@RequestMapping("/api/despachos")
+@RequestMapping("/api/despachos/")
 public class DespachoController {
 
     @Autowired
