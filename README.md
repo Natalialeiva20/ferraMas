@@ -25,6 +25,18 @@ luego de crear la venv se tiene que activar con el siguiente comando
 ```
 ### instalacion de requerimientos y bd
 
+iniciar java
+
+```powershell
+PS C:\Users\diego\Downloads\gestion\gestion\target> java -jar .\gestion-0.0.1-SNAPSHOT.jar
+```
+
+actualizar pip
+
+```powershell
+py -m pip install --upgrade pip
+```
+
 para poder ejecutar el proyecto luego de clonarlo primero se tiene que instalar los requerimientos con el siguiente comando
 
 ```powershell
