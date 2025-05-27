@@ -8,11 +8,11 @@
 		<version>3.4.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.rrhh</groupId>
+	<groupId>com.ferramas</groupId>
 	<artifactId>gestion</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Gestion</name>
-	<description>Ejemplo de tablas relacionadas</description>
+	<description>Sistema de gestion de FerraMas</description>
 	<url/>
 	<licenses>
 		<license/>

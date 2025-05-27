@@ -9,9 +9,9 @@
     - [iniciar servidor](#iniciar-servidor)
   - [proyecto django](#proyecto-django)
 
-## instalacion
+## Instalacion
 
-### venv
+### Venv
 
 lo primero es la venv 
 
@@ -23,14 +23,17 @@ luego de crear la venv se tiene que activar con el siguiente comando
 ```powershell
 .\env\Scripts\activate
 ```
-### instalacion de requerimientos y bd
 
-iniciar java
+### Iniciar java
 
 entrar a la carpeta target del proyecto gestion y ejecutar el siguiente comando para iniciar el proyecto gestion
+
 ```powershell
-PS \gestion\gestion\target> java -jar .\gestion-0.0.1-SNAPSHOT.jar
+java -jar .\gestion-0.0.1-SNAPSHOT.jar
 ```
+
+
+### Instalacion Django
 
 actualizar pip
 
@@ -48,7 +51,9 @@ luego de instalar los requerimientos se tiene que crear la base de datos con el 
 
 ```powershell
 py manage.py makemigrations
+```
 
+```powershell
 py manage.py migrate
 ```
 
@@ -59,15 +64,9 @@ py manage.py createsuperuser
 ```
 luego de crear el superusuario se tiene que ejecutar el servidor con el siguiente comando
 
-### iniciar servidor
+### Iniciar servidor
 
 ```powershell
 py manage.py runserver
 ```
-
-## proyecto django
-
-las cosas que tengo en el proyecto son las siguientes:
-- tengo configurado ferramas como el proyecto
-- tienda es la app
 

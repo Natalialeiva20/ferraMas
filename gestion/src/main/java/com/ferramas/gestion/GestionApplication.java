@@ -1,4 +1,4 @@
-package com.rrhh.gestion;
+package com.ferramas.gestion;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

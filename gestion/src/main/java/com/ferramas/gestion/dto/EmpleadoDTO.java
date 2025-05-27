@@ -1,60 +1,34 @@
-package com.rrhh.gestion.dto;
+package com.ferramas.gestion.dto;
 
 public class EmpleadoDTO {
-    private String rut;
-    private String nombre;
-    private String telefono;
-    private String correo;
-    private String comuna;
+    int idempleado;
+    String nombreempledo;
+    String cargoempleado;
 
     public EmpleadoDTO() {
     }
 
-    public EmpleadoDTO(String rut, String nombre, String telefono, String correo, String comuna) {
-        this.rut = rut;
-        this.nombre = nombre;
-        this.telefono = telefono;
-        this.correo = correo;
-        this.comuna = comuna;
+    public EmpleadoDTO(int idempleado, String nombreempledo, String cargoempleado) {
+        this.idempleado = idempleado;
+        this.nombreempledo = nombreempledo;
+        this.cargoempleado = cargoempleado;
     }
-
-    public String getRut() {
-        return rut;
+    public int getIdempleado() {
+        return idempleado;
     }
-
-    public void setRut(String rut) {
-        this.rut = rut;
+    public void setIdempleado(int idempleado) {
+        this.idempleado = idempleado;
     }
-
-    public String getNombre() {
-        return nombre;
+    public String getNombreempledo() {
+        return nombreempledo;
     }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombreempledo(String nombreempledo) {
+        this.nombreempledo = nombreempledo;
     }
-
-    public String getTelefono() {
-        return telefono;
+    public String getCargoempleado() {
+        return cargoempleado;
     }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    public String getComuna() {
-        return comuna;
-    }
-
-    public void setComuna(String comuna) {
-        this.comuna = comuna;
+    public void setCargoempleado(String cargoempleado) {
+        this.cargoempleado = cargoempleado;
     }
 }

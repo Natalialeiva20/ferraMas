@@ -1,54 +1,45 @@
-package com.rrhh.gestion.entity;
+package com.ferramas.gestion.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name="comuna")
 public class Comuna {
     @Id
-    private int id;
-    private String nombre;
-
-    @OneToMany(mappedBy="comuna", cascade=CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<Empleado> empleados;
+    private int idcomuna;
+    private int idciudad;
+    private String nombrecomuna;
 
     public Comuna() {
-        this.empleados = new ArrayList<>();
     }
 
-    public Comuna(int id, String nombre) {
-        this.id = id;
-        this.nombre = nombre;
+    public Comuna(int idcomuna, int idciudad, String nombrecomuna) {
+        this.idcomuna = idcomuna;
+        this.idciudad = idciudad;
+        this.nombrecomuna = nombrecomuna;
     }
 
-    public int getId() {
-        return id;
+    public int getIdcomuna() {
+        return idcomuna;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdcomuna(int idcomuna) {
+        this.idcomuna = idcomuna;
     }
 
-    public String getNombre() {
-        return nombre;
+    public int getIdciudad() {
+        return idciudad;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setIdciudad(int idciudad) {
+        this.idciudad = idciudad;
     }
 
-    public List<Empleado> getEmpleados() {
-        return empleados;
+    public String getNombrecomuna() {
+        return nombrecomuna;
     }
 
-    public void setEmpleados(List<Empleado> empleados) {
-        this.empleados = empleados;
+    public void setNombrecomuna(String nombrecomuna) {
+        this.nombrecomuna = nombrecomuna;
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 
 @RestController
-@RequestMapping("/api/comunas")
+@RequestMapping("/api/comunas/")
 public class ComunaController {
 
     @Autowired
@@ -52,7 +52,6 @@ public class ComunaController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Método adicional para obtener comunas por ciudad
     @GetMapping("/ciudad/{idCiudad}")
     public List<Comuna> obtenerComunasPorCiudad(@PathVariable int idCiudad) {
         return comunaRepository.findByIdciudad(idCiudad);
