@@ -1,0 +1,8 @@
+com\rrhh\gestion\GestionApplication.class
+com\rrhh\gestion\repository\EmpleadoRepository.class
+com\rrhh\gestion\controller\EmpleadoController.class
+com\rrhh\gestion\controller\ComunaController.class
+com\rrhh\gestion\entity\Comuna.class
+com\rrhh\gestion\repository\ComunaRepository.class
+com\rrhh\gestion\entity\Empleado.class
+com\rrhh\gestion\dto\EmpleadoDTO.class
