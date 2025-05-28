@@ -19,9 +19,9 @@ public class ProductoController {
         return productoRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Producto> obtenerProducto(@PathVariable String id) {
-        return productoRepository.findById(id)
+    @GetMapping("/{idproducto}")
+    public ResponseEntity<Producto> obtenerProducto(@PathVariable String idproducto) {
+        return productoRepository.findById(idproducto)
                 .map(producto -> ResponseEntity.ok().body(producto))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -31,9 +31,9 @@ public class ProductoController {
         return productoRepository.save(producto);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Producto> actualizarProducto(@PathVariable String id, @RequestBody Producto productoDetails) {
-        return productoRepository.findById(id)
+    @PutMapping("/{idproducto}")
+    public ResponseEntity<Producto> actualizarProducto(@PathVariable String idproducto, @RequestBody Producto productoDetails) {
+        return productoRepository.findById(idproducto)
                 .map(producto -> {
                     producto.setNombre(productoDetails.getNombre());
                     producto.setPrecio(productoDetails.getPrecio());
@@ -45,9 +45,9 @@ public class ProductoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarProducto(@PathVariable String id) {
-        return productoRepository.findById(id)
+    @DeleteMapping("/{idproducto}")
+    public ResponseEntity<?> eliminarProducto(@PathVariable String idproducto) {
+        return productoRepository.findById(idproducto)
                 .map(producto -> {
                     productoRepository.delete(producto);
                     return ResponseEntity.ok().build();

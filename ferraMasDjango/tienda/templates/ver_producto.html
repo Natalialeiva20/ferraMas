@@ -1,12 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    {% for producto in productos %}
+{% extends 'templateBase.html' %}
+{% load static %}
+{% block title %}
+Catalogo
+{% endblock %}
+{% block css %}
+<link href="{% static 'css/catalogo.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+
+ {% for producto in datos %}
         <div>
             <h2>{{ producto.nombre }}</h2>
             <p>Precio: {{ producto.precio }}</p>
@@ -15,5 +17,8 @@
     {% empty %}
         <p>No hay productos disponibles.</p>
     {% endfor %}
-</body>
-</html>
+
+{% endblock %}
+{% block js %}
+<script src="{% static 'js/catalogo.js' %}"></script>
+{% endblock %}

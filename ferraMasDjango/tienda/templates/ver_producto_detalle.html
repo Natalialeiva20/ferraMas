@@ -1,0 +1,154 @@
+{% extends 'templateBase.html' %}
+{% load static %}
+
+{% block title %}
+{{ producto.nombre|default:"Producto" }} - FerraMas
+{% endblock %}
+
+{% block css %}
+<link href="{% static 'css/catalogo.css' %}" rel="stylesheet">
+<style>
+    .producto-detalle {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .producto-imagen {
+        max-height: 400px;
+        object-fit: cover;
+        width: 100%;
+        border-radius: 8px;
+    }
+    .no-imagen {
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        color: #6c757d;
+    }
+    .precio-destacado {
+        font-size: 2rem;
+        color: #28a745;
+        font-weight: bold;
+    }
+    .badge-categoria {
+        background-color: #007bff;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.9rem;
+    }
+    .info-item {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="producto-detalle">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'ver_catalogo' %}">Catálogo</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ producto.nombre|default:"Producto" }}</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Imagen del producto -->
+            <div class="col-md-6 mb-4">
+                {% if producto.imagen %}
+                    <img src="{{ producto.imagen }}" class="producto-imagen" alt="{{ producto.nombre }}" 
+                         onerror="this.style.display='none'; document.getElementById('no-imagen').style.display='flex';">
+                    <div id="no-imagen" class="no-imagen" style="display: none;">
+                        <div class="text-center">
+                            <h3>📷</h3>
+                            <p>Imagen no disponible</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="no-imagen">
+                        <div class="text-center">
+                            <h3>📷</h3>
+                            <p>Sin imagen disponible</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Información del producto -->
+            <div class="col-md-6">
+                <h1 class="mb-3">{{ producto.nombre|default:"Producto sin nombre" }}</h1>
+                
+                <!-- Precio -->
+                <div class="precio-destacado mb-3">
+                    ${{ producto.precio|default:0|floatformat:0 }}
+                </div>
+
+                <!-- Categoría -->
+                {% if producto.idcategoria %}
+                <div class="mb-3">
+                    <span class="badge-categoria">
+                        Categoría: {{ producto.idcategoria }}
+                    </span>
+                </div>
+                {% endif %}
+
+                <!-- Descripción -->
+                {% if producto.descripcion %}
+                <div class="info-item">
+                    <h5>Descripción</h5>
+                    <p>{{ producto.descripcion }}</p>
+                </div>
+                {% endif %}
+
+                <!-- Información adicional -->
+                <div class="row">
+                    {% if producto.stockminimo %}
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <h6>Stock mínimo</h6>
+                            <p class="mb-0">{{ producto.stockminimo }} unidades</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if producto.idsede %}
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <h6>Sede</h6>
+                            <p class="mb-0">ID: {{ producto.idsede }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- ID del producto -->
+                <div class="info-item">
+                    <h6>Código del producto</h6>
+                    <p class="mb-0 text-muted">{{ producto.idproducto }}</p>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="mt-4">
+                    <a href="{% url 'ver_catalogo' %}" class="btn btn-secondary me-2">
+                        ← Volver al catálogo
+                    </a>
+                    <button class="btn btn-primary" onclick="alert('Funcionalidad de compra próximamente')">
+                        🛒 Agregar al carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/catalogo.js' %}"></script>
+{% endblock %}

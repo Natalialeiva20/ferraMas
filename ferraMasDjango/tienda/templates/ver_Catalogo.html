@@ -1,18 +1,38 @@
+{% extends 'templateBase.html' %}
 {% load static %}
-{% extends 'templateBse.html' %}
 
 {% block title %}
 Catalogo
 {% endblock %}
-
 {% block css %}
 <link href="{% static 'css/catalogo.css' %}" rel="stylesheet">
 {% endblock %}
-
 {% block content %}
 
-{% endblock %}
+<div class="container mt-4">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for producto in datos %}
+        <div class="col">
+            <div class="card h-100">
+                <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">                <div class="card-body">
+                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                    <p class="card-text">{{ producto.descripcion|truncatewords:20 }}</p>
+                </div>
+                <div class="card-footer">
+                    <span class="text-primary fw-bold">${{ producto.precio }}</span>
+                    <a href="{% url 'ver_producto' producto.idproducto %}" class="btn btn-outline-primary float-end">Ver más</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col">
+            <div class="alert alert-info w-100 text-center">No hay productos en el catálogo.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
+{% endblock %}
 {% block js %}
 <script src="{% static 'js/catalogo.js' %}"></script>
 {% endblock %}
