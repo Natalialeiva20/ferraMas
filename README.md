@@ -125,7 +125,7 @@ El servicio estará disponible en: `http://localhost:8089`
 |----------|-----|-------------|
 | Django Frontend | `http://localhost:8000` | Interfaz web de la tienda |
 | Django Admin | `http://localhost:8000/admin` | Panel de administración |
-| Spring Boot API | `http://localhost:8080` | API de gestión |
+| Spring Boot API | `http://localhost:8089` | API de gestión |
 
 ## 📂 Estructura del Proyecto
 

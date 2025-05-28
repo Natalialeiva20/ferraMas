@@ -19,9 +19,9 @@ public class StockSedeController {
         return stockSedeRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<StockSede> obtenerStockSede(@PathVariable int id) {
-        return stockSedeRepository.findById(id)
+    @GetMapping("/{idstock}")
+    public ResponseEntity<StockSede> obtenerStockSede(@PathVariable int idstock) {
+        return stockSedeRepository.findById(idstock)
                 .map(stockSede -> ResponseEntity.ok().body(stockSede))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -31,9 +31,9 @@ public class StockSedeController {
         return stockSedeRepository.save(stockSede);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<StockSede> actualizarStockSede(@PathVariable int id, @RequestBody StockSede stockSedeDetails) {
-        return stockSedeRepository.findById(id)
+   @PutMapping("/{idstock}")
+    public ResponseEntity<StockSede> actualizarStockSede(@PathVariable int idstock, @RequestBody StockSede stockSedeDetails) {
+        return stockSedeRepository.findById(idstock)
                 .map(stockSede -> {
                     stockSede.setIdproducto(stockSedeDetails.getIdproducto());
                     stockSede.setIdsede(stockSedeDetails.getIdsede());
@@ -43,9 +43,9 @@ public class StockSedeController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarStockSede(@PathVariable int id) {
-        return stockSedeRepository.findById(id)
+    @DeleteMapping("/{idstock}")
+    public ResponseEntity<?> eliminarStockSede(@PathVariable int idstock) {
+        return stockSedeRepository.findById(idstock)
                 .map(stockSede -> {
                     stockSedeRepository.delete(stockSede);
                     return ResponseEntity.ok().build();

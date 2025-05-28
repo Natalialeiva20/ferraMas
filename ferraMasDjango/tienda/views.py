@@ -45,3 +45,17 @@ def verCatalogo(request):
     catalogo = obtenerCatalogo()
     context = {'datos': catalogo}
     return render(request, 'ver_catalogo.html', context)
+
+def obtenerProductos():
+    try:
+        url = "http://localhost:8089/api/productos/"
+        response = requests.get(url)
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+        data = response.json()
+        print(f"API Response: {data}")  # Debug print
+        return data
+    except requests.exceptions
+def verProductos(request):
+    productos = obtenerProductos()
+    context = {'productos': productos}  # Changed from 'datos' to 'productos'
+    return render(request, 'ver_producto.html', context)

@@ -6,18 +6,29 @@ import jakarta.persistence.*;
 @Table(name="producto")
 public class Producto {
     @Id
-    private String id;
+    @Column(name="idproducto")
+    private String idproducto;
+    
+    @Column(name="nombre")
     private String nombre;
-    private double precio;
+    
+    @Column(name="precio")
+    private int precio;
+    
+    @Column(name="stockminimo")
     private int stockminimo;
+    
+    @Column(name="idcategoria")
     private int idcategoria;
+    
+    @Column(name="idsede")
     private int idsede;
 
     public Producto() {
     }
 
-    public Producto(String id, String nombre, double precio, int stockminimo, int idcategoria, int idsede) {
-        this.id = id;
+    public Producto(String idproducto, String nombre, int precio, int stockminimo, int idcategoria, int idsede) {
+        this.idproducto = idproducto;
         this.nombre = nombre;
         this.precio = precio;
         this.stockminimo = stockminimo;
@@ -25,12 +36,13 @@ public class Producto {
         this.idsede = idsede;
     }
 
-    public String getId() {
-        return id;
+    // Getters y setters
+    public String getIdproducto() {
+        return idproducto;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setIdproducto(String idproducto) {
+        this.idproducto = idproducto;
     }
 
     public String getNombre() {
@@ -41,11 +53,11 @@ public class Producto {
         this.nombre = nombre;
     }
 
-    public double getPrecio() {
+    public int getPrecio() {
         return precio;
     }
 
-    public void setPrecio(double precio) {
+    public void setPrecio(int precio) {
         this.precio = precio;
     }
 

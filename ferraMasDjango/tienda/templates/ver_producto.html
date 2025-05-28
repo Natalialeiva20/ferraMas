@@ -6,6 +6,14 @@
     <title>Document</title>
 </head>
 <body>
-    
+    {% for producto in productos %}
+        <div>
+            <h2>{{ producto.nombre }}</h2>
+            <p>Precio: {{ producto.precio }}</p>
+            <p>Descripción: {{ producto.descripcion }}</p>
+        </div>
+    {% empty %}
+        <p>No hay productos disponibles.</p>
+    {% endfor %}
 </body>
 </html>
