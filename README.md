@@ -176,7 +176,7 @@ ferraMas/
 
 2. **Puertos por defecto**:
    - Django: 8000
-   - Spring Boot: 8080
+   - Spring Boot: 8089
 
 3. **Base de datos**: 
    - Django utiliza SQLite por defecto
