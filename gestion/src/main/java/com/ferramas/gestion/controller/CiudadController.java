@@ -19,9 +19,9 @@ public class CiudadController {
         return ciudadRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Ciudad> obtenerCiudad(@PathVariable int id) {
-        return ciudadRepository.findById(id)
+    @GetMapping("/{idciudad}")
+    public ResponseEntity<Ciudad> obtenerCiudad(@PathVariable int idciudad) {
+        return ciudadRepository.findById(idciudad)
                 .map(ciudad -> ResponseEntity.ok().body(ciudad))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -31,9 +31,9 @@ public class CiudadController {
         return ciudadRepository.save(ciudad);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Ciudad> actualizarCiudad(@PathVariable int id, @RequestBody Ciudad ciudadDetails) {
-        return ciudadRepository.findById(id)
+    @PutMapping("/{idciudad}")
+    public ResponseEntity<Ciudad> actualizarCiudad(@PathVariable int idciudad, @RequestBody Ciudad ciudadDetails) {
+        return ciudadRepository.findById(idciudad)
                 .map(ciudad -> {
                     ciudad.setNombreciudad(ciudadDetails.getNombreciudad());
                     return ResponseEntity.ok(ciudadRepository.save(ciudad));
@@ -41,9 +41,9 @@ public class CiudadController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarCiudad(@PathVariable int id) {
-        return ciudadRepository.findById(id)
+    @DeleteMapping("/{idciudad}")
+    public ResponseEntity<?> eliminarCiudad(@PathVariable int idciudad) {
+        return ciudadRepository.findById(idciudad)
                 .map(ciudad -> {
                     ciudadRepository.delete(ciudad);
                     return ResponseEntity.ok().build();

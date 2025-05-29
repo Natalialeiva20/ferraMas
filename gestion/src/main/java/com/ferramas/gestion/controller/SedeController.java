@@ -19,9 +19,9 @@ public class SedeController {
         return sedeRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Sede> obtenerSede(@PathVariable int id) {
-        return sedeRepository.findById(id)
+    @GetMapping("/{idsede}")
+    public ResponseEntity<Sede> obtenerSede(@PathVariable int idsede) {
+        return sedeRepository.findById(idsede)
                 .map(sede -> ResponseEntity.ok().body(sede))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -31,9 +31,9 @@ public class SedeController {
         return sedeRepository.save(sede);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Sede> actualizarSede(@PathVariable int id, @RequestBody Sede sedeDetails) {
-        return sedeRepository.findById(id)
+    @PutMapping("/{idsede}")
+    public ResponseEntity<Sede> actualizarSede(@PathVariable int idsede, @RequestBody Sede sedeDetails) {
+        return sedeRepository.findById(idsede)
                 .map(sede -> {
                     sede.setNombresede(sedeDetails.getNombresede());
                     sede.setIdcomuna(sedeDetails.getIdcomuna());
@@ -44,9 +44,9 @@ public class SedeController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarSede(@PathVariable int id) {
-        return sedeRepository.findById(id)
+    @DeleteMapping("/{idsede}")
+    public ResponseEntity<?> eliminarSede(@PathVariable int idsede) {
+        return sedeRepository.findById(idsede)
                 .map(sede -> {
                     sedeRepository.delete(sede);
                     return ResponseEntity.ok().build();

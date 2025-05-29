@@ -19,9 +19,9 @@ public class DespachoController {
         return despachoRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Despacho> obtenerDespacho(@PathVariable int id) {
-        return despachoRepository.findById(id)
+    @GetMapping("/{numdespacho}")
+    public ResponseEntity<Despacho> obtenerDespacho(@PathVariable int numdespacho) {
+        return despachoRepository.findById(numdespacho)
                 .map(despacho -> ResponseEntity.ok().body(despacho))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -31,9 +31,9 @@ public class DespachoController {
         return despachoRepository.save(despacho);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Despacho> actualizarDespacho(@PathVariable int id, @RequestBody Despacho despachoDetails) {
-        return despachoRepository.findById(id)
+    @PutMapping("/{numdespacho}")
+    public ResponseEntity<Despacho> actualizarDespacho(@PathVariable int numdespacho, @RequestBody Despacho despachoDetails) {
+        return despachoRepository.findById(numdespacho)
                 .map(despacho -> {
                     despacho.setRutcliente(despachoDetails.getRutcliente());
                     despacho.setFechadespacho(despachoDetails.getFechadespacho());
@@ -42,9 +42,9 @@ public class DespachoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarDespacho(@PathVariable int id) {
-        return despachoRepository.findById(id)
+    @DeleteMapping("/{numdespacho}")
+    public ResponseEntity<?> eliminarDespacho(@PathVariable int numdespacho) {
+        return despachoRepository.findById(numdespacho)
                 .map(despacho -> {
                     despachoRepository.delete(despacho);
                     return ResponseEntity.ok().build();

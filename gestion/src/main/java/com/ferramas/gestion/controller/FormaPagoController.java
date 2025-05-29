@@ -19,9 +19,9 @@ public class FormaPagoController {
         return formaPagoRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<FormaPago> obtenerFormaPago(@PathVariable int id) {
-        return formaPagoRepository.findById(id)
+    @GetMapping("/{idformapago}")
+    public ResponseEntity<FormaPago> obtenerFormaPago(@PathVariable int idformapago) {
+        return formaPagoRepository.findById(idformapago)
                 .map(formaPago -> ResponseEntity.ok().body(formaPago))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -31,9 +31,9 @@ public class FormaPagoController {
         return formaPagoRepository.save(formaPago);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<FormaPago> actualizarFormaPago(@PathVariable int id, @RequestBody FormaPago formaPagoDetails) {
-        return formaPagoRepository.findById(id)
+    @PutMapping("/{idformapago}")
+    public ResponseEntity<FormaPago> actualizarFormaPago(@PathVariable int idformapago, @RequestBody FormaPago formaPagoDetails) {
+        return formaPagoRepository.findById(idformapago)
                 .map(formaPago -> {
                     formaPago.setNombreformapago(formaPagoDetails.getNombreformapago());
                     formaPago.setDescripcion(formaPagoDetails.getDescripcion());
@@ -42,9 +42,9 @@ public class FormaPagoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarFormaPago(@PathVariable int id) {
-        return formaPagoRepository.findById(id)
+    @DeleteMapping("/{idformapago}")
+    public ResponseEntity<?> eliminarFormaPago(@PathVariable int idformapago) {
+        return formaPagoRepository.findById(idformapago)
                 .map(formaPago -> {
                     formaPagoRepository.delete(formaPago);
                     return ResponseEntity.ok().build();

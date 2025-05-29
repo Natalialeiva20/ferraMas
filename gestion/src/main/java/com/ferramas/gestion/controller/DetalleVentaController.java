@@ -1,5 +1,6 @@
 package com.ferramas.gestion.controller;
 
+import com.ferramas.gestion.entity.Despacho;
 import com.ferramas.gestion.entity.DetalleVenta;
 import com.ferramas.gestion.entity.DetalleVentaId;
 import com.ferramas.gestion.repository.DetalleVentaRepository;

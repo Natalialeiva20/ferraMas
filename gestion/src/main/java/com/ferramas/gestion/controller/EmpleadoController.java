@@ -19,9 +19,9 @@ public class EmpleadoController {
         return empleadoRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Empleado> obtenerEmpleado(@PathVariable int id) {
-        return empleadoRepository.findById(id)
+    @GetMapping("/{idempleado}")
+    public ResponseEntity<Empleado> obtenerEmpleado(@PathVariable int idempleado) {
+        return empleadoRepository.findById(idempleado)
                 .map(empleado -> ResponseEntity.ok().body(empleado))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -31,9 +31,9 @@ public class EmpleadoController {
         return empleadoRepository.save(empleado);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Empleado> actualizarEmpleado(@PathVariable int id, @RequestBody Empleado empleadoDetails) {
-        return empleadoRepository.findById(id)
+    @PutMapping("/{idempleado}")
+    public ResponseEntity<Empleado> actualizarEmpleado(@PathVariable int idempleado, @RequestBody Empleado empleadoDetails) {
+        return empleadoRepository.findById(idempleado)
                 .map(empleado -> {
                     empleado.setNombreempleado(empleadoDetails.getNombreempleado());
                     empleado.setCargoempleado(empleadoDetails.getCargoempleado());
@@ -42,9 +42,9 @@ public class EmpleadoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarEmpleado(@PathVariable int id) {
-        return empleadoRepository.findById(id)
+    @DeleteMapping("/{idempleado}")
+    public ResponseEntity<?> eliminarEmpleado(@PathVariable int idempleado) {
+        return empleadoRepository.findById(idempleado)
                 .map(empleado -> {
                     empleadoRepository.delete(empleado);
                     return ResponseEntity.ok().build();

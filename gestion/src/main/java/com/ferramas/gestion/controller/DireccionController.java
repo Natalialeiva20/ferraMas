@@ -19,9 +19,9 @@ public class DireccionController {
         return direccionRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Direccion> obtenerDireccion(@PathVariable int id) {
-        return direccionRepository.findById(id)
+    @GetMapping("/{iddireccion}")
+    public ResponseEntity<Direccion> obtenerDireccion(@PathVariable int iddireccion) {
+        return direccionRepository.findById(iddireccion)
                 .map(direccion -> ResponseEntity.ok().body(direccion))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -31,9 +31,9 @@ public class DireccionController {
         return direccionRepository.save(direccion);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Direccion> actualizarDireccion(@PathVariable int id, @RequestBody Direccion direccionDetails) {
-        return direccionRepository.findById(id)
+    @PutMapping("/{iddireccion}")
+    public ResponseEntity<Direccion> actualizarDireccion(@PathVariable int iddireccion, @RequestBody Direccion direccionDetails) {
+        return direccionRepository.findById(iddireccion)
                 .map(direccion -> {
                     direccion.setRutcliente(direccionDetails.getRutcliente());
                     direccion.setCalle(direccionDetails.getCalle());
@@ -45,9 +45,9 @@ public class DireccionController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarDireccion(@PathVariable int id) {
-        return direccionRepository.findById(id)
+    @DeleteMapping("/{iddireccion}")
+    public ResponseEntity<?> eliminarDireccion(@PathVariable int iddireccion) {
+        return direccionRepository.findById(iddireccion)
                 .map(direccion -> {
                     direccionRepository.delete(direccion);
                     return ResponseEntity.ok().build();

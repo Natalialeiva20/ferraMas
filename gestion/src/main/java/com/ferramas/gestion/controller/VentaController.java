@@ -19,9 +19,9 @@ public class VentaController {
         return ventaRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Venta> obtenerVenta(@PathVariable int id) {
-        return ventaRepository.findById(id)
+    @GetMapping("/{numerodocumento}")
+    public ResponseEntity<Venta> obtenerVenta(@PathVariable int numerodocumento) {
+        return ventaRepository.findById(numerodocumento)
                 .map(venta -> ResponseEntity.ok().body(venta))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -31,9 +31,9 @@ public class VentaController {
         return ventaRepository.save(venta);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Venta> actualizarVenta(@PathVariable int id, @RequestBody Venta ventaDetails) {
-        return ventaRepository.findById(id)
+    @PutMapping("/{numerodocumento}")
+    public ResponseEntity<Venta> actualizarVenta(@PathVariable int numerodocumento, @RequestBody Venta ventaDetails) {
+        return ventaRepository.findById(numerodocumento)
                 .map(venta -> {
                     venta.setTipodocumento(ventaDetails.getTipodocumento());
                     venta.setFechaventa(ventaDetails.getFechaventa());
@@ -46,9 +46,9 @@ public class VentaController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarVenta(@PathVariable int id) {
-        return ventaRepository.findById(id)
+    @DeleteMapping("/{numerodocumento}")
+    public ResponseEntity<?> eliminarVenta(@PathVariable int numerodocumento) {
+        return ventaRepository.findById(numerodocumento)
                 .map(venta -> {
                     ventaRepository.delete(venta);
                     return ResponseEntity.ok().build();

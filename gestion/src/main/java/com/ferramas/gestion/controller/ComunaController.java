@@ -19,9 +19,9 @@ public class ComunaController {
         return comunaRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Comuna> obtenerComuna(@PathVariable int id) {
-        return comunaRepository.findById(id)
+    @GetMapping("/{idcomuna}")
+    public ResponseEntity<Comuna> obtenerComuna(@PathVariable int idcomuna) {
+        return comunaRepository.findById(idcomuna)
                 .map(comuna -> ResponseEntity.ok().body(comuna))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -31,9 +31,9 @@ public class ComunaController {
         return comunaRepository.save(comuna);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Comuna> actualizarComuna(@PathVariable int id, @RequestBody Comuna comunaDetails) {
-        return comunaRepository.findById(id)
+    @PutMapping("/{idcomuna}")
+    public ResponseEntity<Comuna> actualizarComuna(@PathVariable int idcomuna, @RequestBody Comuna comunaDetails) {
+        return comunaRepository.findById(idcomuna)
                 .map(comuna -> {
                     comuna.setIdciudad(comunaDetails.getIdciudad());
                     comuna.setNombrecomuna(comunaDetails.getNombrecomuna());
@@ -42,9 +42,9 @@ public class ComunaController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarComuna(@PathVariable int id) {
-        return comunaRepository.findById(id)
+    @DeleteMapping("/{idcomuna}")
+    public ResponseEntity<?> eliminarComuna(@PathVariable int idcomuna) {
+        return comunaRepository.findById(idcomuna)
                 .map(comuna -> {
                     comunaRepository.delete(comuna);
                     return ResponseEntity.ok().build();

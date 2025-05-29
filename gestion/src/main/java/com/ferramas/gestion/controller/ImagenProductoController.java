@@ -19,9 +19,9 @@ public class ImagenProductoController {
         return imagenProductoRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ImagenProducto> obtenerImagenProducto(@PathVariable int id) {
-        return imagenProductoRepository.findById(id)
+    @GetMapping("/{idimagen}")
+    public ResponseEntity<ImagenProducto> obtenerImagenProducto(@PathVariable int idimagen) {
+        return imagenProductoRepository.findById(idimagen)
                 .map(imagen -> ResponseEntity.ok().body(imagen))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -31,9 +31,9 @@ public class ImagenProductoController {
         return imagenProductoRepository.save(imagenProducto);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ImagenProducto> actualizarImagenProducto(@PathVariable int id, @RequestBody ImagenProducto imagenDetails) {
-        return imagenProductoRepository.findById(id)
+    @PutMapping("/{idimagen}")
+    public ResponseEntity<ImagenProducto> actualizarImagenProducto(@PathVariable int idimagen, @RequestBody ImagenProducto imagenDetails) {
+        return imagenProductoRepository.findById(idimagen)
                 .map(imagen -> {
                     imagen.setIdproducto(imagenDetails.getIdproducto());
                     imagen.setImagen(imagenDetails.getImagen());
@@ -43,9 +43,9 @@ public class ImagenProductoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarImagenProducto(@PathVariable int id) {
-        return imagenProductoRepository.findById(id)
+    @DeleteMapping("/{idimagen}")
+    public ResponseEntity<?> eliminarImagenProducto(@PathVariable int idimagen) {
+        return imagenProductoRepository.findById(idimagen)
                 .map(imagen -> {
                     imagenProductoRepository.delete(imagen);
                     return ResponseEntity.ok().build();
