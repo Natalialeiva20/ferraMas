@@ -118,3 +118,38 @@ def seleccionar_sede(request):
     sedes = obtener_sedes()
     context = {'sedes': sedes}
     return render(request, 'seleccionar_sede.html', context)
+
+def cambiar_sede_ajax(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            sede_id = data.get('sede_id')
+            
+            if sede_id:
+                # Obtener información de la sede seleccionada
+                sedes = obtener_sedes()
+                sede_seleccionada = None
+                
+                for sede in sedes:
+                    if str(sede['idsede']) == str(sede_id):
+                        sede_seleccionada = sede
+                        break
+                
+                if sede_seleccionada:
+                    request.session['sede_seleccionada'] = sede_id
+                    request.session['sede_nombre'] = sede_seleccionada['nombresede']
+                    
+                    return JsonResponse({
+                        'success': True,
+                        'message': f'Sede cambiada a {sede_seleccionada["nombresede"]}',
+                        'sede_nombre': sede_seleccionada['nombresede']
+                    })
+                else:
+                    return JsonResponse({'success': False, 'message': 'Sede no encontrada'})
+            else:
+                return JsonResponse({'success': False, 'message': 'ID de sede no válido'})
+                
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': 'Error al cambiar sede'})
+    
+    return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)

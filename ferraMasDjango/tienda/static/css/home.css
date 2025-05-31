@@ -11,3 +11,27 @@ body {
 main {
     flex: 1;
 }
+
+
+.sede-selector {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 0 10px;
+}
+
+.sede-selector .btn {
+    color: white;
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+
+.sede-selector .btn:hover {
+    color: #ffc107;
+}
+
+.sede-dropdown {
+    min-width: 280px;
+}
