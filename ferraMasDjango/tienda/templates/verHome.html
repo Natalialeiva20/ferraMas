@@ -1,0 +1,92 @@
+{% extends 'templateBase.html' %}
+{% load static %}
+
+{% block title %}
+home
+{% endblock %}
+{% block css %}
+
+{% endblock %}
+{% block content %}
+
+<div class="hero-section bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold">FerraMás</h1>
+                <p class="lead">Tu ferretería de confianza con los mejores productos y herramientas para tus proyectos</p>
+                <a href="#productos" class="btn btn-warning btn-lg">Ver Productos</a>
+            </div>
+            <div class="col-lg-6">
+                <img src="{% static 'images/ferreteria-hero.jpg' %}" alt="Ferretería" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="py-5" id="productos">
+    <div class="container">
+        <h2 class="text-center mb-5">Nuestras Categorías</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-hammer fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Herramientas</h5>
+                        <p class="card-text">Herramientas de calidad para profesionales y aficionados</p>
+                        <a href="#" class="btn btn-outline-primary">Ver más</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-wrench fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Ferretería</h5>
+                        <p class="card-text">Tornillos, clavos, tuercas y todo tipo de ferretería</p>
+                        <a href="#" class="btn btn-outline-primary">Ver más</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-paint-brush fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Pinturas</h5>
+                        <p class="card-text">Pinturas, barnices y accesorios para pintura</p>
+                        <a href="#" class="btn btn-outline-primary">Ver más</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h3>¿Por qué elegir FerraMás?</h3>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Más de 20 años de experiencia</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Productos de las mejores marcas</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Asesoramiento personalizado</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Entregas rápidas</li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <h4>Horarios de atención</h4>
+                    <p class="mb-1">Lunes a Viernes: 8:00 - 18:00</p>
+                    <p class="mb-1">Sábados: 8:00 - 14:00</p>
+                    <p>Domingos: Cerrado</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+{% block js %}
+
+{% endblock %}

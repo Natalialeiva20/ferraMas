@@ -1,0 +1,44 @@
+{% extends 'templateBase.html' %}
+{% load static %}
+
+{% block title %}
+Nuestras Sedes - FerraMas
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Nuestras Sedes</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for sede in datos %}
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ sede.nombresede }}</h5>
+                    <p class="card-text">
+                        <i class="fas fa-map-marker-alt text-primary"></i> 
+                        Comuna: {{ sede.idcomuna }} | Ciudad: {{ sede.idciudad }}
+                    </p>
+                    <p class="card-text">
+                        <i class="fas fa-user text-primary"></i> 
+                        Encargado: {{ sede.idempleado }}
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <form method="post" action="{% url 'seleccionar_sede' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="sede_id" value="{{ sede.idsede }}">
+                        <button type="submit" class="btn btn-primary w-100">
+                            Seleccionar esta sede
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col">
+            <div class="alert alert-info w-100 text-center">No hay sedes disponibles.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

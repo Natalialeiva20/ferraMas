@@ -2,6 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import requests
 
+def ver_home(request):
+    return render(request, 'verHome.html') 
+
 # Create your views here.
 def obtener_empleados():
     url="http://localhost:8089/api/empleados/"
@@ -89,3 +92,29 @@ def verProductoDetalle(request, producto_id):
     
     context = {'producto': producto}
     return render(request, 'ver_producto_detalle.html', context)
+
+
+def obtener_sedes():
+    url="http://localhost:8089/api/sedes/"
+    try:
+        response = requests.get(url)
+        data=response.json()
+        return data
+    except Exception as e:
+        return None
+
+def ver_sedes(request):
+    sedes = obtener_sedes()
+    context = {'datos': sedes}
+    return render(request, 'ver_sedes.html', context)
+
+def seleccionar_sede(request):
+    if request.method == 'POST':
+        sede_id = request.POST.get('sede_id')
+        # Almacenar la sede seleccionada en la sesión
+        request.session['sede_seleccionada'] = sede_id
+        return redirect('home')
+    
+    sedes = obtener_sedes()
+    context = {'sedes': sedes}
+    return render(request, 'seleccionar_sede.html', context)

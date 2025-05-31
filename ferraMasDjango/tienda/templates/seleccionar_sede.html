@@ -1,0 +1,37 @@
+{% extends 'templateBase.html' %}
+{% load static %}
+
+{% block title %}
+Seleccionar Sede - FerraMas
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Selecciona tu sede preferida</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'seleccionar_sede' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="sede_id" class="form-label">Sede:</label>
+                            <select class="form-select" id="sede_id" name="sede_id" required>
+                                <option value="">Selecciona una sede...</option>
+                                {% for sede in sedes %}
+                                <option value="{{ sede.idsede }}">{{ sede.nombresede }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Confirmar Selección</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
