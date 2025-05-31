@@ -63,14 +63,33 @@ def verProductos(request):
     context = {'datos': productos}
     return render(request, 'ver_producto.html', context)
 
+def verProductoSinId(request):
+    """Vista para manejar cuando se accede a /producto/ sin ID"""
+    context = {
+        'error': 'ID de producto no especificado',
+        'mensaje': 'Debes especificar un ID de producto válido para ver los detalles.'
+    }
+    return render(request, 'producto_no_encontrado.html', context)
+
 def obtenerProductoPorId(producto_id):
     try:
-        url = f"http://localhost:8089/api/productos/{producto_id}"
+        # Validar que el ID no esté vacío o sea solo espacios
+        if not producto_id or not producto_id.strip():
+            print("ID de producto vacío o inválido")
+            return None
+            
+        # Limpiar el ID de espacios en blanco
+        producto_id = producto_id.strip()
+        
+        url = f"http://localhost:8089/api/productos/{producto_id}/"
         response = requests.get(url)
         response.raise_for_status()
         data = response.json()
         print(f"API Response for product {producto_id}: {data}")
         return data
+    except requests.exceptions.ConnectionError:
+        print(f"Error de conexión al obtener producto {producto_id}")
+        return None
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 404:
             print(f"Producto con ID {producto_id} no encontrado")
@@ -82,9 +101,31 @@ def obtenerProductoPorId(producto_id):
         return None
 
 def verProductoDetalle(request, producto_id):
+    # Validaciones adicionales del ID
+    if not producto_id or not producto_id.strip():
+        context = {
+            'error': 'ID de producto inválido',
+            'producto_id': producto_id,
+            'mensaje': 'El ID del producto no puede estar vacío.'
+        }
+        return render(request, 'producto_no_encontrado.html', context)
+    
+    # Validar longitud del ID (según tu BD es varchar(15))
+    if len(producto_id.strip()) > 15:
+        context = {
+            'error': 'ID de producto demasiado largo',
+            'producto_id': producto_id,
+            'mensaje': 'El ID del producto no puede tener más de 15 caracteres.'
+        }
+        return render(request, 'producto_no_encontrado.html', context)
+    
     producto = obtenerProductoPorId(producto_id)
     if producto is None:
-        context = {'error': 'Producto no encontrado', 'producto_id': producto_id}
+        context = {
+            'error': 'Producto no encontrado',
+            'producto_id': producto_id,
+            'mensaje': 'El producto que buscas no existe o no está disponible en este momento.'
+        }
         return render(request, 'producto_no_encontrado.html', context)
     
     context = {'producto': producto}

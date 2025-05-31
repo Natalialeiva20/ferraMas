@@ -7,18 +7,44 @@ Producto no encontrado - FerraMas
 
 {% block content %}
 <div class="container mt-4">
-    <div class="text-center">
-        <div class="alert alert-warning">
-            <h1 class="display-1">😞</h1>
-            <h2>Producto no encontrado</h2>
-            <p class="lead">Lo sentimos, el producto que buscas no está disponible o no existe.</p>
-            {% if producto_id %}
-            <p>ID del producto buscado: <strong>{{ producto_id }}</strong></p>
-            {% endif %}
-            <hr>
-            <a href="{% url 'ver_catalogo' %}" class="btn btn-primary">
-                ← Volver al catálogo
-            </a>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center">
+                <div class="alert alert-warning">
+                    <h1 class="display-1">😞</h1>
+                    <h2>{{ error|default:"Producto no encontrado" }}</h2>
+                    <p class="lead">{{ mensaje|default:"Lo sentimos, el producto que buscas no está disponible o no existe." }}</p>
+                    
+                    {% if producto_id %}
+                    <div class="bg-light p-3 rounded mt-3">
+                        <p class="mb-0"><strong>ID del producto buscado:</strong> <code>{{ producto_id }}</code></p>
+                    </div>
+                    {% endif %}
+                    
+                    <hr class="my-4">
+                    
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{% url 'ver_catalogo' %}" class="btn btn-primary">
+                            ← Volver al catálogo
+                        </a>
+                        <a href="{% url 'ver_productos' %}" class="btn btn-outline-secondary">
+                            Ver todos los productos
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <small class="text-muted">
+                            Consejos:
+                            <ul class="list-unstyled mt-2">
+                                <li>• Verifica que el ID del producto sea correcto</li>
+                                <li>• El ID no puede estar vacío o contener solo espacios</li>
+                                <li>• El ID no puede tener más de 15 caracteres</li>
+                                <li>• Asegúrate de que el producto existe en el sistema</li>
+                            </ul>
+                        </small>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
