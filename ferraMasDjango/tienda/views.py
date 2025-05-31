@@ -1,11 +1,62 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+import json
+from django.shortcuts import redirect, render
+from django.http import HttpResponse, JsonResponse
 import requests
 
-def ver_home(request):
-    return render(request, 'verHome.html') 
 
-# Create your views here.
+def get_context_with_sedes():
+    sedes = obtener_sedes()
+    return {'sedes': sedes or []}
+
+def filtrarProductosPorSede(sede_id):
+    try:
+        todos_productos = obtenerProductos()
+        if not todos_productos:
+            return []
+        
+        productos_filtrados = [
+            producto for producto in todos_productos 
+            if str(producto.get('idsede', '')) == str(sede_id)
+        ]
+        
+        print(f"Productos filtrados para sede {sede_id}: {len(productos_filtrados)}")
+        return productos_filtrados
+        
+    except Exception as e:
+        print(f"Error filtrando productos por sede: {e}")
+        return []
+
+def obtenerProductosPorSede(sede_id):
+    try:
+        url = f"http://localhost:8089/api/productos/sedes/{sede_id}"
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"Productos por sede {sede_id}: {len(data) if data else 0}")
+            return data
+        elif response.status_code == 404:
+            # Si no existe endpoint específico, obtener todos y filtrar
+            print(f"Endpoint /sede/{sede_id} no encontrado, filtrando localmente")
+            return filtrarProductosPorSede(sede_id)
+        else:
+            print(f"Error al obtener productos por sede: {response.status_code}")
+            return filtrarProductosPorSede(sede_id)
+            
+    except Exception as e:
+        print(f"Error obteniendo productos por sede {sede_id}: {e}")
+        return filtrarProductosPorSede(sede_id)
+
+
+def ver_home(request):
+    context = get_context_with_sedes()
+    # Agregar productos filtrados por sede para mostrar en home
+    sede_seleccionada = request.session.get('sede_seleccionada')
+    if sede_seleccionada:
+        productos_destacados = obtenerProductosPorSede(sede_seleccionada)
+        context['productos_destacados'] = productos_destacados[:6] if productos_destacados else []
+    return render(request, 'verHome.html', context) 
+
 def obtener_empleados():
     url="http://localhost:8089/api/empleados/"
     try:
@@ -16,10 +67,10 @@ def obtener_empleados():
         return None
     
 def ver_empleados(request):
+    context = get_context_with_sedes()
     empleados = obtener_empleados()
-    context = {'datos': empleados}
+    context['datos'] = empleados
     return render(request, 'ver_empleados.html', context)
-
 
 def obtener_comunas():
     url="http://localhost:8089/api/comunas/"
@@ -45,9 +96,21 @@ def obtenerCatalogo():
         return None
     
 def verCatalogo(request):
-    catalogo = obtenerCatalogo()
-    context = {'datos': catalogo}
-    return render(request, 'ver_catalogo.html', context)
+    context = get_context_with_sedes()
+    sede_seleccionada = request.session.get('sede_seleccionada')
+    
+    if sede_seleccionada:
+        productos = obtenerProductosPorSede(sede_seleccionada)
+        sede_nombre = request.session.get('sede_nombre', 'Sede seleccionada')
+        context['sede_filtro'] = {
+            'id': sede_seleccionada,
+            'nombre': sede_nombre
+        }
+    else:
+        productos = obtenerProductos()
+    
+    context['datos'] = productos
+    return render(request, 'ver_Catalogo.html', context)
 
 def obtenerProductos():
     try:
@@ -62,6 +125,7 @@ def obtenerProductos():
         return None
     
 def verProductos(request):
+    context = get_context_with_sedes()
     productos = obtenerProductos()
     context = {'datos': productos}
     return render(request, 'ver_producto.html', context)
@@ -105,13 +169,13 @@ def obtener_sedes():
 
 def ver_sedes(request):
     sedes = obtener_sedes()
-    context = {'datos': sedes}
+    context = get_context_with_sedes()
+    context['datos'] = context['sedes']
     return render(request, 'ver_sedes.html', context)
 
 def seleccionar_sede(request):
     if request.method == 'POST':
         sede_id = request.POST.get('sede_id')
-        # Almacenar la sede seleccionada en la sesión
         request.session['sede_seleccionada'] = sede_id
         return redirect('home')
     
@@ -126,7 +190,6 @@ def cambiar_sede_ajax(request):
             sede_id = data.get('sede_id')
             
             if sede_id:
-                # Obtener información de la sede seleccionada
                 sedes = obtener_sedes()
                 sede_seleccionada = None
                 

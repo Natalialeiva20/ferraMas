@@ -12,7 +12,6 @@ main {
     flex: 1;
 }
 
-
 .sede-selector {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -34,4 +33,23 @@ main {
 
 .sede-dropdown {
     min-width: 280px;
+}
+
+.sede-dropdown .dropdown-item {
+    padding: 10px 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.sede-dropdown .dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.sede-dropdown .dropdown-item:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+.sede-dropdown .dropdown-item small {
+    color: #6c757d;
+    font-size: 0.8em;
 }
