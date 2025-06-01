@@ -53,3 +53,11 @@ main {
     color: #6c757d;
     font-size: 0.8em;
 }
+.img-categoria {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}

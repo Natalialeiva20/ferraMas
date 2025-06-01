@@ -8,6 +8,7 @@ home
 
 {% endblock %}
 {% block content %}
+{% load static %}
 
 <div class="hero-section bg-primary text-white py-5">
     <div class="container">
@@ -28,38 +29,37 @@ home
     <div class="container">
         <h2 class="text-center mb-5">Nuestras Categorías</h2>
         <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 text-center">
-                    <div class="card-body">
-                        <i class="fas fa-hammer fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title">Herramientas</h5>
-                        <p class="card-text">Herramientas de calidad para profesionales y aficionados</p>
-                        <a href="#" class="btn btn-outline-primary">Ver más</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 text-center">
-                    <div class="card-body">
-                        <i class="fas fa-wrench fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title">Ferretería</h5>
-                        <p class="card-text">Tornillos, clavos, tuercas y todo tipo de ferretería</p>
-                        <a href="#" class="btn btn-outline-primary">Ver más</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 text-center">
-                    <div class="card-body">
-                        <i class="fas fa-paint-brush fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title">Pinturas</h5>
-                        <p class="card-text">Pinturas, barnices y accesorios para pintura</p>
-                        <a href="#" class="btn btn-outline-primary">Ver más</a>
-                    </div>
-                </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <img src="{% static 'img/herramientas.jpg' %}" alt="Herramientas" class="img-categoria">
+                <h5 class="card-title">Herramientas</h5>
+                <p class="card-text">Herramientas de calidad para profesionales y aficionados</p>
+                <a href="#" class="btn btn-outline-primary">Ver más</a>
             </div>
         </div>
     </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <img src="{% static 'img/ferreteria.jpg' %}" alt="Ferretería" class="img-categoria">
+                <h5 class="card-title">Ferretería</h5>
+                <p class="card-text">Tornillos, clavos, tuercas y todo tipo de ferretería</p>
+                <a href="#" class="btn btn-outline-primary">Ver más</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <img src="{% static 'img/pinturas.jpg' %}" alt="Pinturas" class="img-categoria">
+                <h5 class="card-title">Pinturas</h5>
+                <p class="card-text">Pinturas, barnices y accesorios para pintura</p>
+                <a href="#" class="btn btn-outline-primary">Ver más</a>
+            </div>
+        </div>
+    </div>
+</div>
 </section>
 
 <section class="bg-light py-5">
