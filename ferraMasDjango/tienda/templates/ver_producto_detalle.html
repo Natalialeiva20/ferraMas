@@ -45,7 +45,6 @@
         padding: 1rem;
         background-color: #f8f9fa;
         border-radius: 8px;
-        
     }
 </style>
 {% endblock %}
@@ -64,35 +63,33 @@
         <div class="row">
             <!-- Imagen del producto -->
             <div class="col-md-6 mb-4">
-                {% if producto.imagen %}
-                    <img src="{{ producto.imagen }}" class="producto-imagen" alt="{{ producto.nombre }}" 
-                         onerror="this.style.display='none'; document.getElementById('no-imagen').style.display='flex';">
-                    <div id="no-imagen" class="no-imagen" style="display: none;">
-                        <div class="text-center">
-                            <h3>📷</h3>
-                            <p>Imagen no disponible</p>
-                        </div>
-                    </div>
+                {% if producto.idproducto == "MART001" %}
+                    <img src="{% static 'img/martillo_carpintero.jpg' %}" class="producto-imagen" alt="Martillo Carpintero">
+                {% elif producto.idproducto == "DEST001" %}
+                    <img src="{% static 'img/destornillador.jpg' %}" class="producto-imagen" alt="Destornillador">
+                {% elif producto.idproducto == "TALA001" %}
+                    <img src="{% static 'img/taladro_electrico.jpg' %}" class="producto-imagen" alt="Taladro Eléctrico">
+                {% elif producto.idproducto == "CLAV001" %}
+                    <img src="{% static 'img/clavos_construccion.jpg' %}" class="producto-imagen" alt="Clavos Construcción">
+                {% elif producto.idproducto == "TORN001" %}
+                    <img src="{% static 'img/tornillos_madera.jpg' %}" class="producto-imagen" alt="Tornillos Madera">
+                {% elif producto.idproducto == "CEME001" %}
+                    <img src="{% static 'img/cemento_portland.jpg' %}" class="producto-imagen" alt="Cemento Portland">
+                {% elif producto.idproducto == "CABL001" %}
+                    <img src="{% static 'img/cable_electrico.jpg' %}" class="producto-imagen" alt="Cable Eléctrico">
+                {% elif producto.idproducto == "ENCH001" %}
+                    <img src="{% static 'img/enchufe_schuko.jpg' %}" class="producto-imagen" alt="Enchufe Schuko">
                 {% else %}
-                    <div class="no-imagen">
-                        <div class="text-center">
-                            <h3>📷</h3>
-                            <p>Sin imagen disponible</p>
-                        </div>
-                    </div>
+                    <img src="{% static 'img/default.jpg' %}" class="producto-imagen" alt="Producto">
                 {% endif %}
             </div>
 
             <!-- Información del producto -->
             <div class="col-md-6">
                 <h1 class="mb-3">{{ producto.nombre|default:"Producto sin nombre" }}</h1>
-                
-                <!-- Precio -->
                 <div class="precio-destacado mb-3">
                     ${{ producto.precio|default:0|floatformat:0 }}
                 </div>
-
-                <!-- Categoría -->
                 {% if producto.idcategoria %}
                 <div class="mb-3">
                     <span class="badge-categoria">
@@ -100,16 +97,12 @@
                     </span>
                 </div>
                 {% endif %}
-
-                <!-- Descripción -->
                 {% if producto.descripcion %}
                 <div class="info-item">
                     <h5>Descripción</h5>
                     <p>{{ producto.descripcion }}</p>
                 </div>
                 {% endif %}
-
-                <!-- Información adicional -->
                 <div class="row">
                     {% if producto.stockminimo %}
                     <div class="col-md-6">
@@ -128,14 +121,10 @@
                     </div>
                     {% endif %}
                 </div>
-
-                <!-- ID del producto -->
                 <div class="info-item">
                     <h6>Código del producto</h6>
                     <p class="mb-0 text-muted">{{ producto.idproducto }}</p>
                 </div>
-
-                <!-- Botones de acción -->
                 <div class="mt-4">
                     <a href="{% url 'ver_catalogo' %}" class="btn btn-secondary me-2">
                         ← Volver al catálogo

@@ -151,11 +151,13 @@ def obtenerProductoPorId(producto_id):
 def verProductoDetalle(request, producto_id):
     producto = obtenerProductoPorId(producto_id)
     if producto is None:
-        context = {'error': 'Producto no encontrado', 'producto_id': producto_id}
-        return render(request, 'producto_no_encontrado.html', context)
+        return render(request, 'producto_no_encontrado.html', {'producto_id': producto_id})
     
-    context = {'producto': producto}
-    return render(request, 'ver_producto_detalle.html', context)
+    # Forzamos el nombre de la imagen
+    producto['imagen'] = f"{producto_id.lower()}.jpg"
+    print("Nombre de imagen:", producto['imagen'])  # Para depuración
+    
+    return render(request, 'ver_producto_detalle.html', {'producto': producto})
 
 
 def obtener_sedes():
