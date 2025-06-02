@@ -49,8 +49,6 @@ def obtenerProductosPorSede(sede_id):
         print(f"Error obteniendo productos por sede {sede_id}: {e}")
         return filtrarProductosPorSede(sede_id)
 
-
-
 def ver_home(request):
     context = get_context_with_sedes()
     # Agregar productos filtrados por sede para mostrar en home
@@ -98,7 +96,6 @@ def obtenerCatalogo():
         return data
     except Exception as e:
         return None
-    
     
 def verCatalogo(request):
     context = get_context_with_sedes()
@@ -150,7 +147,6 @@ def obtener_imagen_estatica(producto_id):
         return f"{MEDIA_URL}{imagenes_estaticas[producto_id]}"
     else:
         return None
-
 
 def obtenerProductos():
     try:
@@ -216,7 +212,6 @@ def verProductoDetalle(request, producto_id):
     
     return render(request, 'ver_producto_detalle.html', {'producto': producto})
 
-
 def obtener_sedes():
     url="http://localhost:8089/api/sedes/"
     try:
@@ -275,7 +270,6 @@ def cambiar_sede_ajax(request):
             return JsonResponse({'success': False, 'message': 'Error al cambiar sede'})
     
     return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
-
 
 def lista_productos(request):
     context = get_context_with_sedes()
@@ -426,29 +420,6 @@ def ver_modificar_producto(request, producto_id):
 
     context['producto'] = producto
     return render(request, 'admins/anadir_producto.html', context)
-
-# def ver_modificar_producto(request, producto_id):
-#     """Vista para mostrar formulario de modificación"""
-#     context = get_context_with_sedes()
-    
-#     # Obtener datos del producto
-#     producto = obtenerProductoPorId(producto_id)
-#     if not producto:
-#         return render(request, 'producto_no_encontrado.html', {'producto_id': producto_id})
-    
-#     # Obtener categorías
-#     try:
-#         url_categorias = "http://localhost:8089/api/categorias/"
-#         response = requests.get(url_categorias)
-#         if response.status_code == 200:
-#             context['categorias'] = response.json()
-#         else:
-#             context['categorias'] = []
-#     except Exception as e:
-#         context['categorias'] = []
-    
-#     context['producto'] = producto
-#     return render(request, 'admins/anadir_producto.html', context)
 
 def modificarProducto(request, producto_id):
     if request.method == 'POST':
