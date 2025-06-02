@@ -1,8 +1,10 @@
 import json
 from django.shortcuts import redirect, render
 from django.http import HttpResponse, JsonResponse
+from django.conf import settings
 from ferraMas.settings import MEDIA_URL
 import requests
+import os
 
 def get_context_with_sedes():
     sedes = obtener_sedes()
@@ -320,56 +322,56 @@ def verProductoDetalle(request, producto_id):
 def anadirProducto(request):
     if request.method == 'POST':
         try:
-            # Obtener datos del formulario
             nombre = request.POST.get('nombre')
             precio = float(request.POST.get('precio', 0))
             stockminimo = int(request.POST.get('stockminimo', 0))
             idcategoria = int(request.POST.get('idcategoria'))
             idsede = int(request.POST.get('idsede'))
-            descripcion = request.POST.get('descripcion', '')
-            
-            # Crear el producto
+
             producto_data = {
                 'nombre': nombre,
                 'precio': precio,
                 'stockminimo': stockminimo,
                 'idcategoria': idcategoria,
                 'idsede': idsede,
-                'descripcion': descripcion
             }
-            
-            # Enviar a la API
+
             url = "http://localhost:8089/api/productos/"
             response = requests.post(url, json=producto_data)
-            
+
             if response.status_code == 201:
                 producto_creado = response.json()
-                
-                # Manejar archivo de imagen si se subió
+
+                # Si hay imagen, guarda el archivo en media y manda solo el nombre a la API
                 if 'imagen' in request.FILES:
                     imagen_file = request.FILES['imagen']
-                    # Aquí podrías guardar la imagen en tu sistema de archivos
-                    # y luego crear el registro en la API de imágenes
+                    descripcion = request.POST.get('descripcion', '')
+
+                    # Guardar la imagen en la carpeta media
+                    media_path = os.path.join(settings.MEDIA_ROOT, imagen_file.name)
+                    with open(media_path, 'wb+') as destination:
+                        for chunk in imagen_file.chunks():
+                            destination.write(chunk)
+
+                    # Mandar solo el nombre del archivo a la API de imágenes
                     imagen_data = {
                         'idproducto': producto_creado['idproducto'],
                         'imagen': imagen_file.name,
                         'descripcion': descripcion
                     }
-                    
                     url_imagen = "http://localhost:8089/api/imagenes-producto/"
                     requests.post(url_imagen, json=imagen_data)
-                
+
                 return JsonResponse({
-                    'success': True, 
+                    'success': True,
                     'message': 'Producto añadido exitosamente',
                     'producto_id': producto_creado['idproducto']
                 })
             else:
                 return JsonResponse({'success': False, 'message': 'Error al añadir producto'})
-                
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Error: {str(e)}'})
-    
+
     return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
 
 def ver_anadir_producto(request):
