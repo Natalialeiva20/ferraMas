@@ -7,46 +7,7 @@
 
 {% block css %}
 <link href="{% static 'css/catalogo.css' %}" rel="stylesheet">
-<style>
-    .producto-detalle {
-        max-width: 800px;
-        margin: 0 auto;
-    }
-    .producto-imagen {
-        max-height: 400px;
-        object-fit: cover;
-        width: 100%;
-        border-radius: 8px;
-    }
-    .no-imagen {
-        height: 400px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #f8f9fa;
-        border: 2px dashed #dee2e6;
-        border-radius: 8px;
-        color: #6c757d;
-    }
-    .precio-destacado {
-        font-size: 2rem;
-        color: #28a745;
-        font-weight: bold;
-    }
-    .badge-categoria {
-        background-color: #007bff;
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 25px;
-        font-size: 0.9rem;
-    }
-    .info-item {
-        margin-bottom: 1rem;
-        padding: 1rem;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-    }
-</style>
+<link href="{% static 'css/producto.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -63,25 +24,18 @@
         <div class="row">
             <!-- Imagen del producto -->
             <div class="col-md-6 mb-4">
-                {% if producto.idproducto == "MART001" %}
-                    <img src="{% static 'img/martillo_carpintero.jpg' %}" class="producto-imagen" alt="Martillo Carpintero">
-                {% elif producto.idproducto == "DEST001" %}
-                    <img src="{% static 'img/destornillador.jpg' %}" class="producto-imagen" alt="Destornillador">
-                {% elif producto.idproducto == "TALA001" %}
-                    <img src="{% static 'img/taladro_electrico.jpg' %}" class="producto-imagen" alt="Taladro Eléctrico">
-                {% elif producto.idproducto == "CLAV001" %}
-                    <img src="{% static 'img/clavos_construccion.jpg' %}" class="producto-imagen" alt="Clavos Construcción">
-                {% elif producto.idproducto == "TORN001" %}
-                    <img src="{% static 'img/tornillos_madera.jpg' %}" class="producto-imagen" alt="Tornillos Madera">
-                {% elif producto.idproducto == "CEME001" %}
-                    <img src="{% static 'img/cemento_portland.jpg' %}" class="producto-imagen" alt="Cemento Portland">
-                {% elif producto.idproducto == "CABL001" %}
-                    <img src="{% static 'img/cable_electrico.jpg' %}" class="producto-imagen" alt="Cable Eléctrico">
-                {% elif producto.idproducto == "ENCH001" %}
-                    <img src="{% static 'img/enchufe_schuko.jpg' %}" class="producto-imagen" alt="Enchufe Schuko">
+                {% if producto.imagen_url %}
+                    <img src="{{ producto.imagen_url }}" class="producto-imagen" alt="{{ producto.nombre }}"
+                         onerror="this.onerror=null; this.src='{% static 'img/default.jpg' %}';">
                 {% else %}
-                    <img src="{% static 'img/default.jpg' %}" class="producto-imagen" alt="Producto">
+                    <div class="no-imagen">
+                        <div class="text-center">
+                            <i class="fas fa-image fa-3x mb-3"></i>
+                            <p>Sin imagen disponible</p>
+                        </div>
+                    </div>
                 {% endif %}
+
             </div>
 
             <!-- Información del producto -->

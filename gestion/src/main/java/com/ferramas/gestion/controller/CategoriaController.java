@@ -19,9 +19,9 @@ public class CategoriaController {
         return categoriaRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Categoria> obtenerCategoria(@PathVariable int id) {
-        return categoriaRepository.findById(id)
+    @GetMapping("/{idcategoria}")
+    public ResponseEntity<Categoria> obtenerCategoria(@PathVariable int idcategoria) {
+        return categoriaRepository.findById(idcategoria)
                 .map(categoria -> ResponseEntity.ok().body(categoria))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -31,9 +31,9 @@ public class CategoriaController {
         return categoriaRepository.save(categoria);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Categoria> actualizarCategoria(@PathVariable int id, @RequestBody Categoria categoriaDetails) {
-        return categoriaRepository.findById(id)
+    @PutMapping("/{idcategoria}")
+    public ResponseEntity<Categoria> actualizarCategoria(@PathVariable int idcategoria, @RequestBody Categoria categoriaDetails) {
+        return categoriaRepository.findById(idcategoria)
                 .map(categoria -> {
                     categoria.setNombrecategoria(categoriaDetails.getNombrecategoria());
                     return ResponseEntity.ok(categoriaRepository.save(categoria));
@@ -41,9 +41,9 @@ public class CategoriaController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarCategoria(@PathVariable int id) {
-        return categoriaRepository.findById(id)
+    @DeleteMapping("/{idcategoria}")
+    public ResponseEntity<?> eliminarCategoria(@PathVariable int idcategoria) {
+        return categoriaRepository.findById(idcategoria)
                 .map(categoria -> {
                     categoriaRepository.delete(categoria);
                     return ResponseEntity.ok().build();

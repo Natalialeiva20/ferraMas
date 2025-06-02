@@ -1,0 +1,233 @@
+{% extends 'templateBase.html' %}
+{% load static %}
+
+{% block title %}
+Modificar Producto - FerraMas
+{% endblock %}
+
+{% block css %}
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        padding: 30px;
+    }
+    .header-form {
+        background: linear-gradient(135deg, #ffc107, #fd7e14);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="form-container">
+        {% if producto.idproducto %}
+        <div class="header-form text-center">
+            <h2><i class="fas fa-edit me-2"></i>Modificar Producto</h2>
+            <p class="mb-0">ID: {{ producto.idproducto }} - {{ producto.nombre }}</p>
+        </div>
+        {% else %}
+        <div class="header-form text-center">
+            <h2><i class="fas fa-plus me-2"></i>Añadir Nuevo Producto</h2>
+            <p class="mb-0">Complete el formulario para añadir un nuevo producto</p>
+        </div>
+        {% endif %}
+
+        <form id="formModificarProducto" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">
+                            <i class="fas fa-tag me-2"></i>Nombre del producto *
+                        </label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" value="{{ producto.nombre }}" required>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="precio" class="form-label">
+                            <i class="fas fa-dollar-sign me-2"></i>Precio *
+                        </label>
+                        <input type="number" class="form-control" id="precio" name="precio" step="0.01" min="0" value="{{ producto.precio }}" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">
+                    <i class="fas fa-align-left me-2"></i>Descripción
+                </label>
+                <textarea class="form-control" id="descripcion" name="descripcion" rows="3">{{ producto.descripcion }}</textarea>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="idcategoria" class="form-label">
+                            <i class="fas fa-list me-2"></i>Categoría *
+                        </label>
+                        <select class="form-control" id="idcategoria" name="idcategoria" required>
+                            <option value="">Seleccionar categoría</option>
+                            {% for categoria in categorias %}
+                                <option value="{{ categoria.idcategoria }}" {% if categoria.idcategoria == producto.idcategoria %}selected{% endif %}>
+                                    {{ categoria.nombrecategoria }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="idsede" class="form-label">
+                            <i class="fas fa-map-marker-alt me-2"></i>Sede *
+                        </label>
+                        <select class="form-control" id="idsede" name="idsede" required>
+                            <option value="" selected>Seleccionar sede</option>
+                            {% for sede in sedes %}
+                                <option value="{{ sede.idsede }}" {% if sede.idsede == producto.idsede %}selected{% endif %}>
+                                    {{ sede.nombresede }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="stockminimo" class="form-label">
+                            <i class="fas fa-boxes me-2"></i>Stock
+                        </label>
+                        <input type="number" class="form-control" id="stockminimo" name="stockminimo" min="0" value="{{ producto.stockminimo }}" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="imagen" class="form-label">
+                    <i class="fas fa-image me-2"></i>Nueva imagen del producto
+                </label>
+                <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*">
+                <small class="text-muted">Deja vacío para mantener la imagen actual</small>
+            </div>
+
+            {% if producto.idproducto %}
+
+     
+            <div class="mb-3">
+                <label for="idproducto" class="form-label">
+                    <i class="fas fa-hashtag me-2"></i>ID del producto
+                </label>
+                <input type="text" class="form-control" id="idproducto" name="idproducto" value="{{ producto.idproducto }}" readonly>
+                <small class="text-muted">Este campo es de solo lectura</small>
+            </div>
+            {% else %}
+             <div class="mb-3">
+                <label for="idproducto" class="form-label">
+                    <i class="fas fa-hashtag me-2"></i>ID del producto
+                </label>
+                <input type="text" class="form-control" id="idproducto" name="idproducto" value="{{ producto.idproducto }}">
+                <small class="text-muted">En caso de mantener vacio se pondra automaticamente </small>
+            </div>
+            {% endif %}
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{% url 'lista_productos' %}" class="btn btn-secondary me-md-2">
+                    <i class="fas fa-times me-2"></i>Cancelar
+                </a>
+                {% if producto.idproducto %}
+                <button type="submit" class="btn btn-warning">
+                    <i class="fas fa-save me-2"></i>Actualizar Producto
+                </button>
+                {% else %}
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Añadir Producto
+                </button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+document.getElementById('formModificarProducto').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    
+    submitBtn.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Actualizando...';
+    submitBtn.disabled = true;
+    
+    fetch('/admin/productos/{{ producto.idproducto }}/actualizar/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            mostrarNotificacion(data.message, 'success');
+            setTimeout(() => {
+                window.location.href = '/admin/productos/';
+            }, 1500);
+        } else {
+            mostrarNotificacion(data.message, 'error');
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        mostrarNotificacion('Error de conexión', 'error');
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+});
+
+function mostrarNotificacion(mensaje, tipo) {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${tipo === 'success' ? 'success' : 'danger'} position-fixed`;
+    notification.style.cssText = 'top: 80px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+        <i class="fas fa-${tipo === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+        ${mensaje}
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

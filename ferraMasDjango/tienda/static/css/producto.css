@@ -1,0 +1,43 @@
+ .producto-detalle {
+     max-width: 800px;
+     margin: 0 auto;
+ }
+
+ .producto-imagen {
+     max-height: 400px;
+     object-fit: cover;
+     width: 100%;
+     border-radius: 8px;
+ }
+
+ .no-imagen {
+     height: 400px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     background-color: #f8f9fa;
+     border: 2px dashed #dee2e6;
+     border-radius: 8px;
+     color: #6c757d;
+ }
+
+ .precio-destacado {
+     font-size: 2rem;
+     color: #28a745;
+     font-weight: bold;
+ }
+
+ .badge-categoria {
+     background-color: #007bff;
+     color: white;
+     padding: 0.5rem 1rem;
+     border-radius: 25px;
+     font-size: 0.9rem;
+ }
+
+ .info-item {
+     margin-bottom: 1rem;
+     padding: 1rem;
+     background-color: #f8f9fa;
+     border-radius: 8px;
+ }

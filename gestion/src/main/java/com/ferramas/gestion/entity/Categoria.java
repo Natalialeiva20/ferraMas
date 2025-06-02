@@ -6,23 +6,23 @@ import jakarta.persistence.*;
 @Table(name="categoria")
 public class Categoria {
     @Id
-    private int id;
+    private int idcategoria;
     private String nombrecategoria;
 
     public Categoria() {
     }
 
-    public Categoria(int id, String nombrecategoria) {
-        this.id = id;
+    public Categoria(int idcategoria, String nombrecategoria) {
+        this.idcategoria = idcategoria;
         this.nombrecategoria = nombrecategoria;
     }
 
     public int getId() {
-        return id;
+        return idcategoria;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int idcategoria) {
+        this.idcategoria = idcategoria;
     }
 
     public String getNombrecategoria() {
