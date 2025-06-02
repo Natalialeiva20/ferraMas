@@ -1,0 +1,39 @@
+{% extends 'templateBase.html' %}
+
+{% block title %}
+Carrito de compras - FerraMas
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>🛒 Carrito de compras</h1>
+    {% if productos %}
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio unitario</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.cantidad }}</td>
+                    <td>${{ producto.precio|floatformat:0 }}</td>
+                    <td>${{ producto.precio|floatformat:0|add:"0"|floatformat:0|mul:producto.cantidad }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'ver_catalogo' %}" class="btn btn-secondary">← Seguir comprando</a>
+    {% else %}
+        <div class="alert alert-info mt-4">
+            Tu carrito está vacío.
+        </div>
+        <a href="{% url 'ver_catalogo' %}" class="btn btn-primary">Ir al catálogo</a>
+    {% endif %}
+</div>
+{% endblock %}
