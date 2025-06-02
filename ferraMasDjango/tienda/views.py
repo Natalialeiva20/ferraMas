@@ -277,10 +277,9 @@ def lista_productos(request):
     context = get_context_with_sedes()
     productos = obtenerProductos()
     context['datos'] = productos or []
-    return render(request, 'admin/lista_productos.html', context)
+    return render(request, 'admins/lista_productos.html', context)
 
 def obtenerImagenesProducto(producto_id):
-    """Obtener imágenes de un producto específico"""
     try:
         url = f"http://localhost:8089/api/imagenes-producto/producto/{producto_id}"
         response = requests.get(url)

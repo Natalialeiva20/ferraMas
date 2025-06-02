@@ -7,7 +7,7 @@
 
 {% block css %}
 <link href="{% static 'css/catalogo.css' %}" rel="stylesheet">
-<link href="{% static 'css/producto.css' %}" rel="stylesheet">
+<link href="{% static 'css/producto.css' %}" rel="stylesheet"> 
 {% endblock %}
 
 {% block content %}
@@ -55,7 +55,7 @@
                 <div class="info-item">
                     <h5>Descripción</h5>
                     <p>{{ producto.descripcion }}</p>
-                </div>
+                </div>  
                 {% endif %}
                 <div class="row">
                     {% if producto.stockminimo %}
