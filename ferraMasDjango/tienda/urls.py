@@ -10,6 +10,9 @@ urlpatterns = [
     path('', views.ver_home, name='home'),
     path('sedes/', views.ver_sedes, name='ver_sedes'),  
     path('seleccionar_sede/', views.seleccionar_sede, name='seleccionar_sede'),  
-    path('cambiar-sede/', views.cambiar_sede_ajax, name='cambiar_sede_ajax')
+    path('cambiar-sede/', views.cambiar_sede_ajax, name='cambiar_sede_ajax'),
+    path('agregar-al-carrito/', views.agregar_al_carrito, name='agregar_al_carrito'),
+    path('carrito/', views.ver_carrito, name='ver_carrito'),
 ]
+
 
