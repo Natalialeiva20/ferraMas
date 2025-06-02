@@ -167,9 +167,11 @@ def obtenerProductos():
                 if imagenes and len(imagenes) > 0:
                     producto['imagen_url'] = f"{MEDIA_URL}{imagenes[0]['imagen']}"
                     producto['tiene_imagen_api'] = True
+                    producto['descripcion'] = imagenes[0].get('descripcion', '')
                 else:
                     producto['imagen_url'] = obtener_imagen_estatica(producto['idproducto'])
                     producto['tiene_imagen_api'] = False
+                    producto['descripcion'] = ''
         
         print(f"API Response: {len(data)} productos procesados")
         return data
@@ -277,6 +279,7 @@ def lista_productos(request):
     context = get_context_with_sedes()
     productos = obtenerProductos()
     context['datos'] = productos or []
+    context['MEDIA_URL'] = MEDIA_URL
     return render(request, 'admins/lista_productos.html', context)
 
 def obtenerImagenesProducto(producto_id):
@@ -307,10 +310,11 @@ def verProductoDetalle(request, producto_id):
     if imagenes and len(imagenes) > 0:
         producto['imagen_url'] = f"{MEDIA_URL}{imagenes[0]['imagen']}"
         producto['tiene_imagen_api'] = True
+        producto['descripcion'] = imagenes[0].get('descripcion', '')
     else:
         producto['imagen_url'] = obtener_imagen_estatica(producto_id)
         producto['tiene_imagen_api'] = False
-    
+        producto['descripcion'] = ""
     return render(request, 'ver_producto_detalle.html', {'producto': producto})
 
 def anadirProducto(request):
@@ -385,27 +389,64 @@ def ver_anadir_producto(request):
     return render(request, 'admins/anadir_producto.html', context)
 
 def ver_modificar_producto(request, producto_id):
-    """Vista para mostrar formulario de modificación"""
     context = get_context_with_sedes()
-    
-    # Obtener datos del producto
     producto = obtenerProductoPorId(producto_id)
     if not producto:
         return render(request, 'producto_no_encontrado.html', {'producto_id': producto_id})
-    
-    # Obtener categorías
+
+    if producto.get('idcategoria'):
+        producto['idcategoria'] = int(producto['idcategoria'])
+    if producto.get('idsede'):
+        producto['idsede'] = int(producto['idsede'])
+
+    # Obtener la imagen principal y su descripción
+    imagenes = obtenerImagenesProducto(producto_id)
+    if imagenes and len(imagenes) > 0:
+        context['descripcion'] = imagenes[0].get('descripcion', '')
+    else:
+        context['descripcion'] = ''
+
     try:
         url_categorias = "http://localhost:8089/api/categorias/"
         response = requests.get(url_categorias)
         if response.status_code == 200:
-            context['categorias'] = response.json()
+            categorias = response.json()
+            print("CATEGORIAS API:", categorias)  # <-- Agrega esto
+            # Forzar idcategoria a int si existe
+            for cat in categorias:
+                if 'idcategoria' in cat and cat['idcategoria']:
+                    cat['idcategoria'] = int(cat['idcategoria'])
+            context['categorias'] = categorias
         else:
             context['categorias'] = []
     except Exception as e:
         context['categorias'] = []
-    
+
     context['producto'] = producto
-    return render(request, 'admin/modificar_producto.html', context)
+    return render(request, 'admins/anadir_producto.html', context)
+
+# def ver_modificar_producto(request, producto_id):
+#     """Vista para mostrar formulario de modificación"""
+#     context = get_context_with_sedes()
+    
+#     # Obtener datos del producto
+#     producto = obtenerProductoPorId(producto_id)
+#     if not producto:
+#         return render(request, 'producto_no_encontrado.html', {'producto_id': producto_id})
+    
+#     # Obtener categorías
+#     try:
+#         url_categorias = "http://localhost:8089/api/categorias/"
+#         response = requests.get(url_categorias)
+#         if response.status_code == 200:
+#             context['categorias'] = response.json()
+#         else:
+#             context['categorias'] = []
+#     except Exception as e:
+#         context['categorias'] = []
+    
+#     context['producto'] = producto
+#     return render(request, 'admins/anadir_producto.html', context)
 
 def modificarProducto(request, producto_id):
     if request.method == 'POST':
@@ -460,11 +501,14 @@ def eliminarProducto(request, producto_id):
     if request.method == 'POST':
         try:
             # Primero eliminar imágenes asociadas
-            try:
-                url_imagenes = f"http://localhost:8089/api/imagenes-producto/producto/{producto_id}"
-                requests.delete(url_imagenes)
-            except:
-                pass  # Continuar aunque falle la eliminación de imágenes
+            # Verificar si el producto tiene imágenes antes de intentar eliminarlas
+            imagenes = obtenerImagenesProducto(producto_id)
+            if imagenes and len(imagenes) > 0:
+                try:
+                    url_imagenes = f"http://localhost:8089/api/imagenes-producto/producto/{producto_id}"
+                    requests.delete(url_imagenes)
+                except Exception:
+                    pass  # Continuar aunque falle la eliminación de imágenes
             
             # Enviar solicitud DELETE a la API
             url = f"http://localhost:8089/api/productos/{producto_id}"
