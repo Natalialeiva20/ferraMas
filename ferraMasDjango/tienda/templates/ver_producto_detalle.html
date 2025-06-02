@@ -126,28 +126,19 @@
                     <p class="mb-0 text-muted">{{ producto.idproducto }}</p>
                 </div>
                 <div class="mt-4">
-    <a href="{% url 'ver_catalogo' %}" class="btn btn-secondary me-2">
-        ← Volver al catálogo
-    </a>
-    <button class="btn btn-primary" onclick="agregarAlCarrito('{{ producto.idproducto }}')">
-        🛒 Agregar al carrito
-    </button>
+                    <a href="{% url 'ver_catalogo' %}" class="btn btn-secondary me-2">
+                        ← Volver al catálogo
+                    </a>
+                    <button class="btn btn-primary" onclick="alert('Funcionalidad de compra próximamente')">
+                        🛒 Agregar al carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<script>
-function agregarAlCarrito(productoId) {
-    fetch('/agregar-al-carrito/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': '{{ csrf_token }}'
-        },
-        body: JSON.stringify({ producto_id: productoId, cantidad: 1 })
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message);
-        // Puedes redirigir al carrito si quieres:
-        // if(data.success) window.location.href = '/carrito/';
-    });
-}
-</script>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/catalogo.js' %}"></script>
+{% endblock %}

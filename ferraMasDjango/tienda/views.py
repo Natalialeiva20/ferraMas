@@ -2,8 +2,7 @@ import json
 from django.shortcuts import redirect, render
 from django.http import HttpResponse, JsonResponse
 import requests
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+
 
 def get_context_with_sedes():
     sedes = obtener_sedes()
@@ -218,28 +217,4 @@ def cambiar_sede_ajax(request):
         except Exception as e:
             return JsonResponse({'success': False, 'message': 'Error al cambiar sede'})
     
-    return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
-from django.views.decorators.csrf import csrf_exempt
-
-@csrf_exempt
-def agregar_al_carrito(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            producto_id = str(data.get('producto_id'))
-            cantidad = int(data.get('cantidad', 1))
-
-            if not producto_id:
-                return JsonResponse({'success': False, 'message': 'ID de producto no válido'})
-
-            carrito = request.session.get('carrito', {})
-            if producto_id in carrito:
-                carrito[producto_id] += cantidad
-            else:
-                carrito[producto_id] = cantidad
-
-            request.session['carrito'] = carrito
-            return JsonResponse({'success': True, 'message': 'Producto agregado al carrito'})
-        except Exception as e:
-            return JsonResponse({'success': False, 'message': 'Error al agregar al carrito'})
     return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
