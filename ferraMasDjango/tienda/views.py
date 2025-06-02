@@ -218,3 +218,5 @@ def cambiar_sede_ajax(request):
             return JsonResponse({'success': False, 'message': 'Error al cambiar sede'})
     
     return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
+def administracion(request):
+    return render(request, 'administracion.html')
