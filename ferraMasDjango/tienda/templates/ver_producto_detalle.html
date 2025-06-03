@@ -78,21 +78,34 @@
                 <div class="info-item">
                     <h6>Código del producto</h6>
                     <p class="mb-0 text-muted">{{ producto.idproducto }}</p>
-                </div>
                 <div class="mt-4">
                     <a href="{% url 'ver_catalogo' %}" class="btn btn-secondary me-2">
                         ← Volver al catálogo
                     </a>
-                    <button class="btn btn-primary" onclick="alert('Funcionalidad de compra próximamente')">
-                        🛒 Agregar al carrito
-                    </button>
+                    <div class="mt-4">
+    
+    <button class="btn btn-primary" onclick="addToCart('{{ producto.idproducto }}')">
+        🛒 Agregar al carrito
+    </button>
+</div>
+                    <!-- Aquí puedes tener tu botón de agregar al carrito -->
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock %} <!-- Esto cierra el block content -->
 
 {% block js %}
+<script>
+function addToCart(productId) {
+    fetch(`/cart/add/${productId}/`)
+        .then(response => response.json())
+        .then(data => {
+            document.querySelector('.cart-count').textContent = data.total_items;
+            alert('Producto agregado al carrito');
+        });
+}
+</script>
 <script src="{% static 'js/catalogo.js' %}"></script>
 {% endblock %}

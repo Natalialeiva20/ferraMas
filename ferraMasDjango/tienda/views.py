@@ -5,6 +5,7 @@ from django.conf import settings
 from ferraMas.settings import MEDIA_URL
 import requests
 import os
+from django.shortcuts import render
 
 def get_context_with_sedes():
     sedes = obtener_sedes()
@@ -496,3 +497,7 @@ def eliminarProducto(request, producto_id):
             return JsonResponse({'success': False, 'message': f'Error: {str(e)}'})
     
     return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
+
+
+def lista_sedes(request):
+    return render(request, 'ver_sedes.html')

@@ -60,6 +60,10 @@
                             </ul>
                         </div>
                     </div>
+                    <a class="nav-link position-relative" href="{% url 'cart:ver_carrito' %}">
+   <a href="{% url 'cart:ver_carrito' %}" class="nav-link position-relative">
+    🛒 <span class="cart-count badge bg-danger" style="font-size:0.8em;">0</span>
+</a>
 
                     <form class="d-flex me-3" action="{#% url 'buscar' %#}" method="GET">
                         <input class="form-control me-2" type="search" name="q" placeholder="Buscar productos..."
