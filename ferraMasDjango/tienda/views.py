@@ -504,6 +504,17 @@ def eliminarProducto(request, producto_id):
     
     return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
 
-
 def lista_sedes(request):
     return render(request, 'ver_sedes.html')
+
+def ver_clientes(request):
+    try:
+        url = "http://localhost:8089/api/clientes/"
+        response = requests.get(url)
+        if response.status_code == 200:
+            clientes = response.json()
+        else:
+            clientes = []
+    except Exception as e:
+        clientes = []
+    return render(request, 'admins/lista_clientes.html', {'clientes': clientes})

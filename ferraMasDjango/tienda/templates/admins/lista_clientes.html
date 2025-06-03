@@ -1,0 +1,31 @@
+{% extends 'templateBase.html' %}
+{% block title %}Clientes{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Lista de Clientes</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>RUT</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>ID Comuna</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente.rutcliente }}</td>
+                <td>{{ cliente.nombrecliente }}</td>
+                <td>{{ cliente.apellidocliente }}</td>
+                <td>{{ cliente.idcomuna }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">No hay clientes registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
