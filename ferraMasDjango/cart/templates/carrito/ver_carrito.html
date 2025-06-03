@@ -1,8 +1,17 @@
+{% extends 'templateBase.html' %}
+{% load static %}
+{% block title %}Carrito de Compras{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'carrito.css' %}">
+{% endblock css %}
+
+{% block content %}
 <div class="container mt-4">
     <h2 class="mb-4 text-center">Carrito de Compras</h2>
     
     <!-- DEBUG INFORMATION -->
-    <div style="background:yellow; padding:20px; margin:20px 0; border:2px solid red;">
+    <div class="debugInfo">
         <h3>🔍 DEBUG INFO:</h3>
         <p><strong>Items count:</strong> {{ items|length }}</p>
         <p><strong>Items exist?</strong> {% if items %}✅ YES{% else %}❌ NO{% endif %}</p>
@@ -72,8 +81,10 @@
             </form>
         </div>
     </div>
-    
+
     {% if not items %}
         <p class="text-muted mt-2 text-center">Agrega productos al carrito para proceder al pago.</p>
     {% endif %}
 </div>
+
+{% endblock %}

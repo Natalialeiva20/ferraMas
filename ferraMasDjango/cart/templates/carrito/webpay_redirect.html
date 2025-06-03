@@ -38,29 +38,14 @@
     </style>
 </head>
 <body>
-    <div class="redirect-container">
-        <h2>Procesando pago...</h2>
-        <div class="spinner"></div>
-        <p>Serás redirigido a Transbank en unos segundos.</p>
-        <p><small>Si no eres redirigido automáticamente, haz clic en "Continuar"</small></p>
-        
-        <!-- Formulario de redirección a Transbank -->
-        <form id="redirectForm" action="{{ url }}" method="POST">
-            <input type="hidden" name="token_ws" value="{{ token }}">
-            <button type="submit" class="btn btn-primary">Continuar al pago</button>
-        </form>
-    </div>
-
+    <form id="webpay-form" action="{{ url }}" method="POST">
+        <input type="hidden" name="token_ws" value="{{ token }}">
+        <noscript>
+            <button type="submit">Ir a Webpay</button>
+        </noscript>
+    </form>
     <script>
-        // Auto-submit del formulario después de 2 segundos
-        setTimeout(function() {
-            document.getElementById('redirectForm').submit();
-        }, 2000);
-        
-        // Mostrar el botón después de 5 segundos por si algo falla
-        setTimeout(function() {
-            document.getElementById('redirectForm').style.display = 'block';
-        }, 5000);
+        document.getElementById('webpay-form').submit();
     </script>
 </body>
 </html>

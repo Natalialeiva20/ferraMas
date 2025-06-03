@@ -1,4 +1,4 @@
-/* Estilos para el botón de pago */
+/* Estilos para el botón de pago
 .btn-success {
     background-color: #28a745 !important;
     border-color: #28a745 !important;
@@ -10,4 +10,12 @@
 .btn-success:hover:not(:disabled) {
     background-color: #218838 !important;
     border-color: #1e7e34 !important;
+} */
+
+.debugInfo {
+    background: yellow;
+    padding: 20px;
+    margin: 20px 0;
+    border: 2px solid red;
+
 }

@@ -10,6 +10,40 @@ Catalogo
 {% block content %}
 
 <div class="container mt-4">
+       {% if sede_filtro and not request.session.mostrando_todos %}
+    <div class="alert alert-info d-flex justify-content-between align-items-center">
+        <div>
+            <i class="bi bi-geo-alt me-2"></i>
+            Mostrando productos de: <strong>{{ sede_filtro.nombre }}</strong>
+        </div>
+        <form method="post" action="{% url 'ver_catalogo' %}">
+            {% csrf_token %}
+            <button type="submit" name="ver_todos" value="1" class="btn btn-outline-secondary btn-sm">
+                Ver todos los productos
+            </button>
+        </form>
+    </div>
+    {% elif sede_filtro and request.session.mostrando_todos %}
+    <div class="alert alert-info d-flex justify-content-between align-items-center">
+        <div>
+            <i class="bi bi-info-circle me-2"></i>
+            Mostrando todos los productos disponibles.
+        </div>
+        <form method="post" action="{% url 'ver_catalogo' %}">
+            {% csrf_token %}
+            <button type="submit" name="ver_filtro" value="1" class="btn btn-outline-secondary btn-sm">
+                Ver productos filtrados
+            </button>
+        </form>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        Mostrando todos los productos disponibles.
+    </div>
+    {% endif %}
+
+    
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for producto in datos %}
         <div class="col">

@@ -3,3 +3,4 @@ djangorestframework
 Pillow
 django-crispy-forms
 requests
+transbank-sdk

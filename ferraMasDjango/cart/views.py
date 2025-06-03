@@ -10,8 +10,24 @@ import uuid
 # Transbank SDK import
 try:
     from transbank.webpay.webpay_plus.transaction import Transaction
-except ImportError:
-    Transaction = None  # Will error if not installed
+    from transbank.common.options import WebpayOptions
+    
+    # Configuración de integración (solo para pruebas)
+    commerce_code = '597055555532'
+    api_key = '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C'
+    options = WebpayOptions(commerce_code, api_key, integration_type='TEST')
+    transaction = Transaction(options)
+    
+    TRANSBANK_AVAILABLE = True
+    print("Transbank SDK configurado exitosamente para pruebas con WebpayOptions")
+except ImportError as e:
+    print(f"Transbank SDK no está disponible: {e}")
+    TRANSBANK_AVAILABLE = False
+    transaction = None
+except Exception as e:
+    print(f"Error al configurar Transbank: {e}")
+    TRANSBANK_AVAILABLE = False
+    transaction = None
 
 def add_to_cart(request, product_id):
     cart = request.session.get('cart', {})
@@ -27,6 +43,7 @@ def ver_carrito(request):
     for product_id, quantity in cart.items():
         url = f"http://localhost:8089/api/productos/{product_id}"
         response = requests.get(url)
+        print(f"API response for {product_id}: {response.status_code} {response.text}")
         if response.status_code == 200:
             product = response.json()
             precio = float(product.get('precio', 0))
@@ -49,12 +66,18 @@ def ver_carrito(request):
     error = None
     return render(request, 'carrito/ver_carrito.html', {'items': items, 'total': total, 'warning': warning, 'error': error})
 
+@csrf_exempt
 def iniciar_pago(request):
+    if not TRANSBANK_AVAILABLE or transaction is None:
+        return render(request, 'carrito/ver_carrito.html', {'items': [], 'total': 0, 'error': 'Transbank SDK no configurado'})
+    
     if request.method == 'POST':
         cart = request.session.get('cart', {})
         if not cart:
-            return redirect('cart:ver_carrito')
-        # Calcular el total
+            return render(request, 'carrito/ver_carrito.html', {'items': [], 'total': 0, 'error': 'El carrito está vacío'})
+        
+        # Calcular el total y armar el carrito para la sesión
+        items = []
         total = 0
         for product_id, quantity in cart.items():
             url = f"http://localhost:8089/api/productos/{product_id}"
@@ -62,50 +85,68 @@ def iniciar_pago(request):
             if response.status_code == 200:
                 product = response.json()
                 precio = float(product.get('precio', 0))
-                total += precio * quantity
+                subtotal = precio * quantity
+                total += subtotal
+                items.append({
+                    'id': product_id,
+                    'nombre': product.get('nombre'),
+                    'precio': precio,
+                    'cantidad': quantity,
+                    'subtotal': subtotal
+                })
         if total <= 0:
-            return redirect('cart:ver_carrito')
-        # Transbank test credentials
-        commerce_code = '597055555532'
-        api_key = '597055555532'
-        return_url = request.build_absolute_uri(reverse('cart:retorno_pago'))
-        buy_order = str(uuid.uuid4())[:26]
-        session_id = str(uuid.uuid4())
+            return render(request, 'carrito/ver_carrito.html', {'items': items, 'total': total, 'error': 'El total del carrito es $0. No se puede pagar.'})
+
+        # Generar datos para Transbank
+        import uuid
+        from datetime import datetime
+        buy_order = f"orden_{uuid.uuid4().hex[:8]}_{int(datetime.now().timestamp())}"
+        session_id = f"session_{uuid.uuid4().hex[:8]}"
         amount = int(total)
-        if Transaction is None:
-            return render(request, 'carrito/ver_carrito.html', {'items': [], 'total': 0, 'error': 'Transbank SDK no instalado'})
-        tx = Transaction(commerce_code=commerce_code, api_key=api_key, environment='TEST')
-        response = tx.create(buy_order, session_id, amount, return_url)
-        if response['status'] == 'CREATED':
-            url = response['url']
-            token = response['token']
-            # Guardar datos de la orden en sesión para validación posterior
-            request.session['webpay_order'] = {
-                'buy_order': buy_order,
-                'session_id': session_id,
-                'amount': amount,
-                'cart': cart
-            }
-            return render(request, 'carrito/webpay_redirect.html', {'url': url, 'token': token})
+        return_url = request.build_absolute_uri(reverse('cart:retorno_pago'))
+
+        # Guardar datos de la orden en sesión
+        request.session['orden_datos'] = {
+            'buy_order': buy_order,
+            'session_id': session_id,
+            'carrito': items,
+            'total': total,
+        }
+
+        # Crear transacción con Transbank
+        response = transaction.create(buy_order, session_id, amount, return_url)
+        print("Transbank response:", response)  # <-- Pega esta línea aquí para depuración
+        if 'token' in response and 'url' in response:
+            request.session['orden_datos']['token'] = response['token']
+            return render(request, 'carrito/webpay_redirect.html', {'url': response['url'], 'token': response['token']})
         else:
-            return render(request, 'carrito/ver_carrito.html', {'items': [], 'total': 0, 'error': 'Error iniciando pago'})
-    return redirect('cart:ver_carrito')
+            error_msg = response.get('error_message', 'Error iniciando pago')
+            return render(request, 'carrito/ver_carrito.html', {'items': items, 'total': total, 'error': error_msg})
 
 @csrf_exempt
 def retorno_pago(request):
-    token = request.POST.get('token_ws')
+    if not TRANSBANK_AVAILABLE or transaction is None:
+        return render(request, 'carrito/ver_carrito.html', {'error': 'Transbank SDK no configurado'})
+    
+    token = request.GET.get('token_ws') or request.POST.get('token_ws')
     if not token:
         return render(request, 'carrito/ver_carrito.html', {'error': 'Token de pago no recibido'})
-    # Transbank test credentials
-    commerce_code = '597055555532'
-    api_key = '597055555532'
-    if Transaction is None:
-        return render(request, 'carrito/ver_carrito.html', {'error': 'Transbank SDK no instalado'})
-    tx = Transaction(commerce_code=commerce_code, api_key=api_key, environment='TEST')
-    response = tx.commit(token)
-    if response['status'] == 'AUTHORIZED':
-        # Limpiar carrito
-        request.session['cart'] = {}
-        return render(request, 'carrito/pago_exitoso.html', {'response': response})
-    else:
-        return render(request, 'carrito/pago_fallido.html', {'response': response})
+    
+    try:
+        result = transaction.commit(token)
+        orden_datos = request.session.get('orden_datos', {})
+        if result.get('status') == 'AUTHORIZED':
+            # Limpiar carrito y sesión de orden
+            request.session['cart'] = {}
+            if 'orden_datos' in request.session:
+                del request.session['orden_datos']
+            return render(request, 'carrito/pago_exitoso.html', {
+                'response': result,
+                'orden': orden_datos.get('buy_order'),
+                'total': orden_datos.get('total'),
+                'carrito': orden_datos.get('carrito', [])
+            })
+        else:
+            return render(request, 'carrito/pago_fallido.html', {'response': result})
+    except Exception as e:
+        return render(request, 'carrito/pago_fallido.html', {'response': {'error': str(e)}})

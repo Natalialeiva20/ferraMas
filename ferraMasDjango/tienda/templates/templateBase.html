@@ -24,11 +24,9 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <div class="navbar-nav me-auto">
                         <a class="nav-link" href="{% url 'ver_catalogo' %}">Productos</a>
-                        <a class="nav-link" href="{#% url 'ofertas' %#}">Ofertas</a>
                         <a class="nav-link" href="{% url 'ver_sedes' %}">sucursales</a>
                         <a class="nav-link" href="{% url 'lista_productos' %}">admins-productos</a>
                     </div>
-
                    <div class="sede-selector d-none d-lg-block">
                         <div class="dropdown">
                             <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" type="button"
@@ -60,20 +58,14 @@
                             </ul>
                         </div>
                     </div>
-                    
-  
-
-                    <form class="d-flex me-3" action="{#% url 'buscar' %#}" method="GET">
+                    <form class="d-flex me-3" action="{% url 'ver_catalogo' %}" method="GET">
                         <input class="form-control me-2" type="search" name="q" placeholder="Buscar productos..."
                             aria-label="Search">
                         <button class="btn btn-outline-light" type="submit">Buscar</button></form>
-                     <a href="{% url 'cart:ver_carrito' %}" class="nav-link position-relative">
-    🛒 <span class="cart-count badge bg-danger" style="font-size:0.8em;">0</span>
-</a>
-
-                    
+                        <a href="{% url 'cart:ver_carrito' %}" class="nav-link position-relative">
+                            🛒 <span class="cart-count badge bg-danger" style="font-size:0.8em;">0</span>
+                        </a>
                         <a class="nav-link" href="{#% url 'login' %#}">Iniciar Sesión</a>
-                        <a class="nav-link" href="{#% url 'registro' %#}">Registrarse</a>
                     </div>
                 </div>
             </nav>

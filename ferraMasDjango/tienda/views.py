@@ -14,17 +14,17 @@ def get_context_with_sedes():
 def filtrarProductosPorSede(sede_id):
     try:
         todos_productos = obtenerProductos()
+        print(f"Filtrando por sede_id: {sede_id}")
+        for p in todos_productos:
+            print(f"Producto: {p['idproducto']} idsede: {p.get('idsede')}")
         if not todos_productos:
             return []
-        
         productos_filtrados = [
             producto for producto in todos_productos 
             if str(producto.get('idsede', '')) == str(sede_id)
         ]
-        
         print(f"Productos filtrados para sede {sede_id}: {len(productos_filtrados)}")
         return productos_filtrados
-        
     except Exception as e:
         print(f"Error filtrando productos por sede: {e}")
         return []
@@ -33,19 +33,13 @@ def obtenerProductosPorSede(sede_id):
     try:
         url = f"http://localhost:8089/api/productos/sedes/{sede_id}"
         response = requests.get(url)
-        
         if response.status_code == 200:
             data = response.json()
             print(f"Productos por sede {sede_id}: {len(data) if data else 0}")
             return data
-        elif response.status_code == 404:
-            # Si no existe endpoint específico, obtener todos y filtrar
-            print(f"Endpoint /sede/{sede_id} no encontrado, filtrando localmente")
-            return filtrarProductosPorSede(sede_id)
         else:
-            print(f"Error al obtener productos por sede: {response.status_code}")
+            print(f"Endpoint /api/productos/sedes/{sede_id} no disponible, filtrando localmente")
             return filtrarProductosPorSede(sede_id)
-            
     except Exception as e:
         print(f"Error obteniendo productos por sede {sede_id}: {e}")
         return filtrarProductosPorSede(sede_id)
@@ -97,12 +91,23 @@ def obtenerCatalogo():
         return data
     except Exception as e:
         return None
-    
+
 def verCatalogo(request):
     context = get_context_with_sedes()
+    mostrando_todos = False
+
+    # Botón "Ver todos los productos"
+    if request.method == 'POST' and request.POST.get('ver_todos') == '1':
+        request.session['mostrando_todos'] = True
+
+    # Botón "Ver productos filtrados"
+    elif request.method == 'POST' and request.POST.get('ver_filtro') == '1':
+        request.session['mostrando_todos'] = False
+
+    mostrando_todos = request.session.get('mostrando_todos', False)
     sede_seleccionada = request.session.get('sede_seleccionada')
-    
-    if sede_seleccionada:
+
+    if sede_seleccionada and not mostrando_todos:
         productos = obtenerProductosPorSede(sede_seleccionada)
         sede_nombre = request.session.get('sede_nombre', 'Sede seleccionada')
         context['sede_filtro'] = {
@@ -111,20 +116,21 @@ def verCatalogo(request):
         }
     else:
         productos = obtenerProductos()
+        if sede_seleccionada:
+            sede_nombre = request.session.get('sede_nombre', 'Sede seleccionada')
+            context['sede_filtro'] = {
+                'id': sede_seleccionada,
+                'nombre': sede_nombre
+            }
 
     if productos:
         for producto in productos:
-            # Obtener imágenes de la API
             imagenes = obtenerImagenesProducto(producto['idproducto'])
             producto['imagenes'] = imagenes
-            
-            # Determinar qué imagen usar
             if imagenes and len(imagenes) > 0:
-                # Usar imagen de la API
                 producto['imagen_url'] = f"{MEDIA_URL}{imagenes[0]['imagen']}"
                 producto['tiene_imagen_api'] = True
             else:
-                # Usar imagen estática basada en el ID del producto
                 producto['imagen_url'] = obtener_imagen_estatica(producto['idproducto'])
                 producto['tiene_imagen_api'] = False
 
