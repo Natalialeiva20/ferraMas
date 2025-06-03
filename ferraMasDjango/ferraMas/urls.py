@@ -23,7 +23,7 @@ urlpatterns = [
   path('admin/', admin.site.urls),
     path('tienda/', include('tienda.urls')),
     path('cart/', include('cart.urls', namespace='cart')),  # <-- aquí
-    path('', include('tienda.urls')),  # si quieres que el home sea el de tienda
+    path('', include('tienda.urls')),  
 ]
 
 if settings.DEBUG:
