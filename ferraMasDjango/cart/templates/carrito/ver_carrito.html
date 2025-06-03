@@ -1,46 +1,27 @@
-{% extends 'templateBase.html' %}
-{% load static %}
-
-{% block css %}
-<link rel="stylesheet" href="{% static 'carrito.css' %}">
-<style>
-/* Mejoras visuales rápidas */
-.container.mt-4 {
-    max-width: 700px;
-    margin: 40px auto;
-}
-.table {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    overflow: hidden;
-}
-.table th {
-    background: #f5f7fa;
-    color: #2d3a3a;
-    font-weight: bold;
-}
-.table td, .table th {
-    vertical-align: middle;
-}
-tfoot td {
-    background: #f8f9fa;
-    font-size: 1.1em;
-}
-.btn-primary {
-    background: #2ecc71;
-    border: none;
-}
-.btn-primary:hover {
-    background: #27ae60;
-}
-</style>
-{% endblock %}
-
-{% block content %}
 <div class="container mt-4">
     <h2 class="mb-4 text-center">Carrito de Compras</h2>
+    
+    <!-- DEBUG INFORMATION -->
+    <div style="background:yellow; padding:20px; margin:20px 0; border:2px solid red;">
+        <h3>🔍 DEBUG INFO:</h3>
+        <p><strong>Items count:</strong> {{ items|length }}</p>
+        <p><strong>Items exist?</strong> {% if items %}✅ YES{% else %}❌ NO{% endif %}</p>
+        <p><strong>Total:</strong> ${{ total }}</p>
+        <p><strong>Cart session:</strong> {{ request.session.cart }}</p>
+    </div>
+    
+    {% if error %}
+        <div class="alert alert-danger text-center">{{ error }}</div>
+    {% endif %}
+    {% if warning %}
+        <div class="alert alert-warning text-center">{{ warning }}</div>
+    {% endif %}
+    
     {% if items %}
+        <div style="background:green; color:white; padding:10px;">
+            ✅ ITEMS EXIST - BUTTON SHOULD APPEAR BELOW
+        </div>
+        
         <table class="table carrito-table">
             <thead>
                 <tr>
@@ -67,14 +48,32 @@ tfoot td {
                 </tr>
             </tfoot>
         </table>
-        <div class="d-flex justify-content-end gap-2 mt-3">
-            <a href="{% url 'ver_catalogo' %}" class="btn btn-primary">Seguir comprando</a>
-        </div>
     {% else %}
+        <div style="background:red; color:white; padding:10px;">
+            ❌ NO ITEMS - BUTTON WILL NOT APPEAR
+        </div>
         <p class="alert alert-info text-center">No hay productos en el carrito</p>
         <div class="text-center">
             <a href="{% url 'ver_catalogo' %}" class="btn btn-primary">Ir al catálogo</a>
         </div>
     {% endif %}
+    
+    <!-- BOTÓN DE PAGO - SIEMPRE VISIBLE PARA DEBUG -->
+    <div style="background:blue; color:white; padding:20px; margin:20px 0;">
+        <h3>🔘 BOTÓN DE PAGO (SIEMPRE VISIBLE PARA DEBUG):</h3>
+        <div class="d-flex justify-content-end gap-2 mt-3">
+            <a href="{% url 'ver_catalogo' %}" class="btn btn-primary">Seguir comprando</a>
+            
+            <form action="{% url 'cart:iniciar_pago' %}" method="post" style="display:inline; background:orange; padding:10px;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success" style="font-size:18px; padding:15px;">
+                    🛒 PAGAR AHORA
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    {% if not items %}
+        <p class="text-muted mt-2 text-center">Agrega productos al carrito para proceder al pago.</p>
+    {% endif %}
 </div>
-{% endblock %}

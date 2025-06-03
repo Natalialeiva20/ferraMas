@@ -1,0 +1,12 @@
+{% extends 'templateBase.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="alert alert-success text-center">
+        <h2>¡Pago realizado con éxito!</h2>
+        <p>Tu compra ha sido procesada correctamente.</p>
+        <p>Número de autorización: {{ response.authorization_code }}</p>
+        <a href="{% url 'ver_catalogo' %}" class="btn btn-primary">Volver al catálogo</a>
+    </div>
+</div>
+{% endblock %}

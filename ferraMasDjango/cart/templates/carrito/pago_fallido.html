@@ -1,0 +1,11 @@
+{% extends 'templateBase.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="alert alert-danger text-center">
+        <h2>Pago no autorizado</h2>
+        <p>No se pudo procesar tu pago. Inténtalo nuevamente.</p>
+        <a href="{% url 'cart:ver_carrito' %}" class="btn btn-primary">Volver al carrito</a>
+    </div>
+</div>
+{% endblock %}
