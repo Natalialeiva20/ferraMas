@@ -1,11 +1,47 @@
 {% extends 'templateBase.html' %}
 {% load static %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'carrito.css' %}">
+<style>
+/* Mejoras visuales rápidas */
+.container.mt-4 {
+    max-width: 700px;
+    margin: 40px auto;
+}
+.table {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+.table th {
+    background: #f5f7fa;
+    color: #2d3a3a;
+    font-weight: bold;
+}
+.table td, .table th {
+    vertical-align: middle;
+}
+tfoot td {
+    background: #f8f9fa;
+    font-size: 1.1em;
+}
+.btn-primary {
+    background: #2ecc71;
+    border: none;
+}
+.btn-primary:hover {
+    background: #27ae60;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
-    <h2>Carrito de Compras</h2>
+    <h2 class="mb-4 text-center">Carrito de Compras</h2>
     {% if items %}
-        <table class="table">
+        <table class="table carrito-table">
             <thead>
                 <tr>
                     <th>Producto</th>
@@ -31,10 +67,14 @@
                 </tr>
             </tfoot>
         </table>
-        <a href="{% url 'ver_catalogo' %}" class="btn btn-primary">Seguir comprando</a>
+        <div class="d-flex justify-content-end gap-2 mt-3">
+            <a href="{% url 'ver_catalogo' %}" class="btn btn-primary">Seguir comprando</a>
+        </div>
     {% else %}
-        <p>No hay productos en el carrito</p>
-        <a href="{% url 'ver_catalogo' %}" class="btn btn-primary">Ir al catálogo</a>
+        <p class="alert alert-info text-center">No hay productos en el carrito</p>
+        <div class="text-center">
+            <a href="{% url 'ver_catalogo' %}" class="btn btn-primary">Ir al catálogo</a>
+        </div>
     {% endif %}
 </div>
 {% endblock %}
