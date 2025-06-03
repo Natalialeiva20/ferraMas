@@ -20,9 +20,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+  path('admin/', admin.site.urls),
     path('tienda/', include('tienda.urls')),
-   path('cart/', include('cart.urls', namespace='cart')),
+    path('cart/', include('cart.urls', namespace='cart')),  # <-- aquí
+    path('', include('tienda.urls')),  # si quieres que el home sea el de tienda
 ]
 
 if settings.DEBUG:
