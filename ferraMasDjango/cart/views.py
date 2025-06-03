@@ -1,8 +1,9 @@
-from django.shortcuts import render
+# IMPORTS CORREGIDOS
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.contrib import messages  # ← CORREGIDO: era pyexpat.errors
 import requests
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import redirect
 from django.conf import settings
 from django.urls import reverse
 import uuid
@@ -36,18 +37,21 @@ def ver_carrito(request):
                 'nombre': product.get('nombre'),
                 'precio': precio,
                 'cantidad': quantity,
-                'subtotal': subtotal
+                'subtotal': subtotal,
+                'clave': product_id  # ← AGREGADO: necesario para el botón eliminar
             })
+    
     # Depuración
     print('DEBUG cart:', cart)
     print('DEBUG items:', items)
     print('DEBUG total:', total)
+    
     # Si hay items pero el total es 0, mostrar advertencia
     warning = None
     if items and total == 0:
         warning = 'El total del carrito es $0. No se puede pagar.'
     error = None
-    return render(request, 'carrito/ver_carrito.html', {'items': items, 'total': total, 'warning': warning, 'error': error})
+    return render(request, 'ver_carrito.html', {'items': items, 'total': total, 'warning': warning, 'error': error})
 
 def iniciar_pago(request):
     if request.method == 'POST':
@@ -73,7 +77,7 @@ def iniciar_pago(request):
         session_id = str(uuid.uuid4())
         amount = int(total)
         if Transaction is None:
-            return render(request, 'carrito/ver_carrito.html', {'items': [], 'total': 0, 'error': 'Transbank SDK no instalado'})
+            return render(request, 'ver_carrito.html', {'items': [], 'total': 0, 'error': 'Transbank SDK no instalado'})
         tx = Transaction(commerce_code=commerce_code, api_key=api_key, environment='TEST')
         response = tx.create(buy_order, session_id, amount, return_url)
         if response['status'] == 'CREATED':
@@ -86,26 +90,64 @@ def iniciar_pago(request):
                 'amount': amount,
                 'cart': cart
             }
-            return render(request, 'carrito/webpay_redirect.html', {'url': url, 'token': token})
+            return render(request, 'webpay_redirect.html', {'url': url, 'token': token})
         else:
-            return render(request, 'carrito/ver_carrito.html', {'items': [], 'total': 0, 'error': 'Error iniciando pago'})
+            return render(request, 'ver_carrito.html', {'items': [], 'total': 0, 'error': 'Error iniciando pago'})
     return redirect('cart:ver_carrito')
 
 @csrf_exempt
 def retorno_pago(request):
     token = request.POST.get('token_ws')
     if not token:
-        return render(request, 'carrito/ver_carrito.html', {'error': 'Token de pago no recibido'})
+        return render(request, 'ver_carrito.html', {'error': 'Token de pago no recibido'})
     # Transbank test credentials
     commerce_code = '597055555532'
     api_key = '597055555532'
     if Transaction is None:
-        return render(request, 'carrito/ver_carrito.html', {'error': 'Transbank SDK no instalado'})
+        return render(request, 'ver_carrito.html', {'error': 'Transbank SDK no instalado'})
     tx = Transaction(commerce_code=commerce_code, api_key=api_key, environment='TEST')
     response = tx.commit(token)
     if response['status'] == 'AUTHORIZED':
         # Limpiar carrito
         request.session['cart'] = {}
-        return render(request, 'carrito/pago_exitoso.html', {'response': response})
+        return render(request, 'pago_exitoso.html', {'response': response})
     else:
-        return render(request, 'carrito/pago_fallido.html', {'response': response})
+        return render(request, 'pago_fallido.html', {'response': response})
+
+# ← FUNCIONES CORREGIDAS:
+def remove_from_cart(request, clave_producto):
+    """Eliminar producto del carrito"""
+    cart = request.session.get('cart', {})
+    
+    if clave_producto in cart:
+        # Obtener nombre del producto antes de eliminarlo
+        try:
+            url = f"http://localhost:8089/api/productos/{clave_producto}"
+            response = requests.get(url)
+            if response.status_code == 200:
+                product = response.json()
+                producto_nombre = product.get('nombre', 'Producto')
+            else:
+                producto_nombre = 'Producto'
+        except:
+            producto_nombre = 'Producto'
+        
+        # Eliminar del carrito
+        del cart[clave_producto]
+        request.session['cart'] = cart
+        request.session.modified = True
+        
+        messages.success(request, f'"{producto_nombre}" eliminado del carrito')
+    else:
+        messages.warning(request, 'El producto no está en el carrito')
+    
+    return redirect('cart:ver_carrito')
+
+def clear_cart(request):
+    """Vaciar todo el carrito"""
+    if request.method == 'POST':  # ← AGREGADO: solo por POST para seguridad
+        request.session['cart'] = {}
+        request.session.modified = True
+        messages.success(request, 'Carrito vaciado completamente')
+    
+    return redirect('cart:ver_carrito')

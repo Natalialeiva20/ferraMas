@@ -1,14 +1,8 @@
+{% extends 'templateBase.html' %}
+
+{% block content %}
 <div class="container mt-4">
     <h2 class="mb-4 text-center">Carrito de Compras</h2>
-    
-    <!-- DEBUG INFORMATION -->
-    <div style="background:yellow; padding:20px; margin:20px 0; border:2px solid red;">
-        <h3>🔍 DEBUG INFO:</h3>
-        <p><strong>Items count:</strong> {{ items|length }}</p>
-        <p><strong>Items exist?</strong> {% if items %}✅ YES{% else %}❌ NO{% endif %}</p>
-        <p><strong>Total:</strong> ${{ total }}</p>
-        <p><strong>Cart session:</strong> {{ request.session.cart }}</p>
-    </div>
     
     {% if error %}
         <div class="alert alert-danger text-center">{{ error }}</div>
@@ -18,10 +12,6 @@
     {% endif %}
     
     {% if items %}
-        <div style="background:green; color:white; padding:10px;">
-            ✅ ITEMS EXIST - BUTTON SHOULD APPEAR BELOW
-        </div>
-        
         <table class="table carrito-table">
             <thead>
                 <tr>
@@ -29,6 +19,7 @@
                     <th>Precio</th>
                     <th>Cantidad</th>
                     <th>Total</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,42 +29,56 @@
                     <td>${{ item.precio }}</td>
                     <td>{{ item.cantidad }}</td>
                     <td>${{ item.subtotal }}</td>
+                    <td>
+                        <!-- BOTÓN PARA ELIMINAR PRODUCTO INDIVIDUAL -->
+                        <form action="{% url 'cart:remove_from_cart' item.clave %}" method="post" style="display:inline;" 
+                              onsubmit="return confirm('¿Eliminar {{ item.nombre }} del carrito?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm" title="Eliminar del carrito">
+                                🗑️ Eliminar
+                            </button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                    <td colspan="4" class="text-end"><strong>Total:</strong></td>
                     <td><strong>${{ total }}</strong></td>
                 </tr>
             </tfoot>
         </table>
-    {% else %}
-        <div style="background:red; color:white; padding:10px;">
-            ❌ NO ITEMS - BUTTON WILL NOT APPEAR
+
+        <!-- SECCIÓN DE BOTONES -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <!-- Botón para vaciar carrito completo -->
+            <form action="{% url 'cart:clear_cart' %}" method="post" style="display:inline;" 
+                  onsubmit="return confirm('¿Vaciar todo el carrito?');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger">
+                    🗑️ Vaciar carrito
+                </button>
+            </form>
+            
+            <!-- Botones de navegación y pago -->
+            <div class="d-flex gap-2">
+                <a href="{% url 'ver_catalogo' %}" class="btn btn-primary">Seguir comprando</a>
+                <form action="{% url 'cart:iniciar_pago' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">
+                        💳 Pagar
+                    </button>
+                </form>
+            </div>
         </div>
+        
+    {% else %}
+        <!-- CARRITO VACÍO -->
         <p class="alert alert-info text-center">No hay productos en el carrito</p>
         <div class="text-center">
             <a href="{% url 'ver_catalogo' %}" class="btn btn-primary">Ir al catálogo</a>
         </div>
     {% endif %}
-    
-    <!-- BOTÓN DE PAGO - SIEMPRE VISIBLE PARA DEBUG -->
-    <div style="background:blue; color:white; padding:20px; margin:20px 0;">
-        <h3>🔘 BOTÓN DE PAGO (SIEMPRE VISIBLE PARA DEBUG):</h3>
-        <div class="d-flex justify-content-end gap-2 mt-3">
-            <a href="{% url 'ver_catalogo' %}" class="btn btn-primary">Seguir comprando</a>
-            
-            <form action="{% url 'cart:iniciar_pago' %}" method="post" style="display:inline; background:orange; padding:10px;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-success" style="font-size:18px; padding:15px;">
-                    🛒 PAGAR AHORA
-                </button>
-            </form>
-        </div>
-    </div>
-    
-    {% if not items %}
-        <p class="text-muted mt-2 text-center">Agrega productos al carrito para proceder al pago.</p>
-    {% endif %}
 </div>
+{% endblock %}

@@ -19,11 +19,14 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from ferraMasDjango.cart import views
+
 urlpatterns = [
   path('admin/', admin.site.urls),
     path('tienda/', include('tienda.urls')),
     path('cart/', include('cart.urls', namespace='cart')),  # <-- aquí
-    path('', include('tienda.urls')),  
+    path('', include('tienda.urls')),
+    path('remove/<str:clave_producto>/', views.remove_from_cart, name='remove_from_cart'),  
 ]
 
 if settings.DEBUG:
