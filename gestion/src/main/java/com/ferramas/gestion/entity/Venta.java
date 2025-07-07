@@ -4,28 +4,46 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="venta")
+@Table(name = "venta")
 public class Venta {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int numerodocumento;
+
     private String tipodocumento;
     private LocalDate fechaventa;
     private int totalventa;
-    private int idformapago;
-    private String rutcliente;
-    private int idsede;
+
+    // Foreign key relationships
+    @ManyToOne
+    @JoinColumn(name = "idformapago", referencedColumnName = "idformapago")
+    private FormaPago formapago;
+
+    @ManyToOne
+    @JoinColumn(name = "rutcliente", referencedColumnName = "rutcliente")
+    private Cliente cliente;
+
+    @ManyToOne
+    @JoinColumn(name = "idsede", referencedColumnName = "idsede")
+    private Sede sede;
+
+    // Keep primitive fields for compatibility
+    // private int idformapago;
+    // private String rutcliente;
+    // private int idsede;
 
     public Venta() {
     }
 
-    public Venta(int numerodocumento, String tipodocumento, LocalDate fechaventa, int totalventa, int idformapago, String rutcliente, int idsede) {
+    public Venta(int numerodocumento, String tipodocumento, LocalDate fechaventa, int totalventa, FormaPago formapago,
+            Cliente cliente, Sede sede) {
         this.numerodocumento = numerodocumento;
         this.tipodocumento = tipodocumento;
         this.fechaventa = fechaventa;
         this.totalventa = totalventa;
-        this.idformapago = idformapago;
-        this.rutcliente = rutcliente;
-        this.idsede = idsede;
+        this.formapago = formapago;
+        this.cliente = cliente;
+        this.sede = sede;
     }
 
     public int getNumerodocumento() {
@@ -60,27 +78,27 @@ public class Venta {
         this.totalventa = totalventa;
     }
 
-    public int getIdformapago() {
-        return idformapago;
+    public FormaPago getFormaPago() {
+        return formapago;
     }
 
-    public void setIdformapago(int idformapago) {
-        this.idformapago = idformapago;
+    public void setFormaPago(FormaPago formapago) {
+        this.formapago = formapago;
     }
 
-    public String getRutcliente() {
-        return rutcliente;
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void setRutcliente(String rutcliente) {
-        this.rutcliente = rutcliente;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
-    public int getIdsede() {
-        return idsede;
+    public Sede getSede() {
+        return sede;
     }
 
-    public void setIdsede(int idsede) {
-        this.idsede = idsede;
+    public void setSede(Sede sede) {
+        this.sede = sede;
     }
 }

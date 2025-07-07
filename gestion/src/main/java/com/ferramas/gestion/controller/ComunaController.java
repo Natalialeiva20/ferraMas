@@ -35,7 +35,7 @@ public class ComunaController {
     public ResponseEntity<Comuna> actualizarComuna(@PathVariable int idcomuna, @RequestBody Comuna comunaDetails) {
         return comunaRepository.findById(idcomuna)
                 .map(comuna -> {
-                    comuna.setIdciudad(comunaDetails.getIdciudad());
+                    comuna.setCiudad(comunaDetails.getCiudad());
                     comuna.setNombrecomuna(comunaDetails.getNombrecomuna());
                     return ResponseEntity.ok(comunaRepository.save(comuna));
                 })
@@ -54,6 +54,6 @@ public class ComunaController {
 
     @GetMapping("/ciudad/{idCiudad}")
     public List<Comuna> obtenerComunasPorCiudad(@PathVariable int idCiudad) {
-        return comunaRepository.findByIdciudad(idCiudad);
+        return comunaRepository.findByCiudadIdciudad(idCiudad);
     }
 }

@@ -321,15 +321,30 @@ def verProductoDetalle(request, producto_id):
     return render(request, 'ver_producto_detalle.html', {'producto': producto})
 
 def anadirProducto(request):
+    print("=== INICIO anadirProducto ===")
+    print(f"Método: {request.method}")
+    
     if request.method == 'POST':
+        print("Datos POST recibidos:")
+        for key, value in request.POST.items():
+            print(f"  {key}: {value}")
+        
+        print("Archivos recibidos:")
+        for key, file in request.FILES.items():
+            print(f"  {key}: {file.name}")
+        
         try:
+            idProducto = request.POST.get('idproducto', None)
             nombre = request.POST.get('nombre')
             precio = float(request.POST.get('precio', 0))
             stockminimo = int(request.POST.get('stockminimo', 0))
             idcategoria = int(request.POST.get('idcategoria'))
             idsede = int(request.POST.get('idsede'))
 
+            print(f"Datos procesados: {nombre}, {precio}, {stockminimo}, {idcategoria}, {idsede}, {idProducto}")
+
             producto_data = {
+                'idproducto': idProducto if idProducto else None,  # Si es None, la API lo asignará automáticamente
                 'nombre': nombre,
                 'precio': precio,
                 'stockminimo': stockminimo,
@@ -337,16 +352,20 @@ def anadirProducto(request):
                 'idsede': idsede,
             }
 
+            print(f"Enviando a API: {producto_data}")
             url = "http://localhost:8089/api/productos/"
             response = requests.post(url, json=producto_data)
+            print(f"Respuesta API: {response.status_code} - {response.text}")
 
-            if response.status_code == 201:
+            if response.status_code in [200,201]:
                 producto_creado = response.json()
+                print(f"Producto creado: {producto_creado}")
 
                 # Si hay imagen, guarda el archivo en media y manda solo el nombre a la API
                 if 'imagen' in request.FILES:
                     imagen_file = request.FILES['imagen']
                     descripcion = request.POST.get('descripcion', '')
+                    print(f"Procesando imagen: {imagen_file.name}")
 
                     # Guardar la imagen en la carpeta media
                     media_path = os.path.join(settings.MEDIA_ROOT, imagen_file.name)
@@ -361,7 +380,8 @@ def anadirProducto(request):
                         'descripcion': descripcion
                     }
                     url_imagen = "http://localhost:8089/api/imagenes-producto/"
-                    requests.post(url_imagen, json=imagen_data)
+                    img_response = requests.post(url_imagen, json=imagen_data)
+                    print(f"Respuesta imagen API: {img_response.status_code} - {img_response.text}")
 
                 return JsonResponse({
                     'success': True,
@@ -369,10 +389,13 @@ def anadirProducto(request):
                     'producto_id': producto_creado['idproducto']
                 })
             else:
+                print(f"Error en API: {response.status_code} - {response.text}")
                 return JsonResponse({'success': False, 'message': 'Error al añadir producto'})
         except Exception as e:
+            print(f"Excepción: {str(e)}")
             return JsonResponse({'success': False, 'message': f'Error: {str(e)}'})
 
+    print("Método no es POST")
     return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
 
 def ver_anadir_producto(request):
@@ -384,11 +407,9 @@ def ver_anadir_producto(request):
         response = requests.get(url_categorias)
         if response.status_code == 200:
             context['categorias'] = response.json()
-        else:
-            context['categorias'] = []
     except Exception as e:
         context['categorias'] = []
-    
+    print(f"Context final - categorías: {context.get('categorias', [])}")
     return render(request, 'admins/anadir_producto.html', context)
 
 def ver_modificar_producto(request, producto_id):
@@ -479,33 +500,123 @@ def modificarProducto(request, producto_id):
 
 def eliminarProducto(request, producto_id):
     if request.method == 'POST':
+        print(f"Método POST detectado para producto {producto_id}")
         try:
-            # Primero eliminar imágenes asociadas
-            # Verificar si el producto tiene imágenes antes de intentar eliminarlas
-            imagenes = obtenerImagenesProducto(producto_id)
-            if imagenes and len(imagenes) > 0:
-                try:
-                    url_imagenes = f"http://localhost:8089/api/imagenes-producto/producto/{producto_id}"
-                    requests.delete(url_imagenes)
-                except Exception:
-                    pass  # Continuar aunque falle la eliminación de imágenes
+            print(f"Iniciando proceso de eliminación para producto {producto_id}")
             
-            # Enviar solicitud DELETE a la API
+            # Obtener imágenes para eliminar archivos físicos
+            print(f"Obteniendo imágenes del producto {producto_id}...")
+            imagenes = obtenerImagenesProducto(producto_id)
+            print(f"Imágenes obtenidas: {len(imagenes) if imagenes else 0}")
+            if imagenes:
+                print(f"Detalles de imágenes: {imagenes}")
+            
+            archivos_a_eliminar = []
+            
+            if imagenes:
+                print(f"Procesando {len(imagenes)} imágenes...")
+                for i, imagen in enumerate(imagenes):
+                    print(f"Procesando imagen {i+1}: {imagen}")
+                    archivo_path = os.path.join(settings.MEDIA_ROOT, imagen['imagen'])
+                    print(f"Ruta del archivo: {archivo_path}")
+                    if os.path.exists(archivo_path):
+                        archivos_a_eliminar.append(archivo_path)
+                        print(f"Archivo existe y se añadió a la lista de eliminación: {archivo_path}")
+                    else:
+                        print(f"Archivo NO existe: {archivo_path}")
+            else:
+                print("No hay imágenes para procesar")
+            
+            print(f"Total archivos a eliminar: {len(archivos_a_eliminar)}")
+            
+            # Eliminar imágenes de la base de datos individualmente
+            # Eliminar todas las imágenes asociadas al producto usando el ID del producto
+            print(f"Eliminando imágenes del producto {producto_id} usando endpoint por producto...")
+            try:
+                url_imagenes_producto = f"http://localhost:8089/api/imagenes-producto/producto/{producto_id}"
+                print(f"URL eliminación imágenes por producto: {url_imagenes_producto}")
+                delete_response = requests.delete(url_imagenes_producto)
+                print(f"Respuesta eliminación imágenes del producto {producto_id}: {delete_response.status_code}")
+                if delete_response.status_code not in [200, 204]:
+                    print(f"Error eliminando imágenes del producto {producto_id}: {delete_response.text}")
+                else:
+                    print(f"Imágenes del producto {producto_id} eliminadas exitosamente de BD")
+            except Exception as e:
+                print(f"EXCEPCIÓN eliminando imágenes del producto {producto_id}: {e}")
+            
+            # Eliminar el producto
+            print(f"Eliminando producto {producto_id} de la base de datos...")
             url = f"http://localhost:8089/api/productos/{producto_id}"
+            print(f"URL eliminación producto: {url}")
             response = requests.delete(url)
+            print(f"Respuesta eliminación producto {producto_id}: {response.status_code}")
+            
+            if response.status_code not in [200, 204]:
+                print(f"Error en respuesta: {response.text}")
             
             if response.status_code == 204 or response.status_code == 200:
-                return JsonResponse({'success': True, 'message': 'Producto eliminado exitosamente'})
+                print(f"Producto {producto_id} eliminado exitosamente de BD")
+                
+                # Eliminar archivos físicos solo si el producto se eliminó exitosamente
+                print(f"Eliminando {len(archivos_a_eliminar)} archivos físicos...")
+                for i, archivo in enumerate(archivos_a_eliminar):
+                    try:
+                        print(f"Eliminando archivo {i+1}/{len(archivos_a_eliminar)}: {archivo}")
+                        os.remove(archivo)
+                        print(f"Archivo eliminado exitosamente: {archivo}")
+                    except Exception as e:
+                        print(f"Error eliminando archivo {archivo}: {e}")
+                
+                print("=== ELIMINACIÓN EXITOSA ===")
+                # Preparar contexto con mensaje de éxito
+                context = get_context_with_sedes()
+                productos = obtenerProductos()
+                context['datos'] = productos or []
+                context['MEDIA_URL'] = MEDIA_URL
+                context['exito'] = f'Producto {producto_id} eliminado correctamente'
+                print(f"Context preparado con éxito. Productos restantes: {len(context['datos'])}")
+                
             else:
-                return JsonResponse({'success': False, 'message': 'Error al eliminar producto'})
+                print(f"=== ERROR ELIMINANDO PRODUCTO ===")
+                print(f"Status code: {response.status_code}")
+                print(f"Response text: {response.text}")
+                
+                # Preparar contexto con mensaje de error
+                context = get_context_with_sedes()
+                productos = obtenerProductos()
+                context['datos'] = productos or []
+                context['MEDIA_URL'] = MEDIA_URL
+                context['error'] = f'Error al eliminar el producto {producto_id}'
+                print(f"Context preparado con error. Productos: {len(context['datos'])}")
                 
         except Exception as e:
-            return JsonResponse({'success': False, 'message': f'Error: {str(e)}'})
+            print(f"=== EXCEPCIÓN EN eliminarProducto ===")
+            print(f"Tipo de excepción: {type(e).__name__}")
+            print(f"Mensaje de excepción: {str(e)}")
+            import traceback
+            print(f"Traceback completo:")
+            traceback.print_exc()
+            
+            # Preparar contexto con mensaje de error
+            context = get_context_with_sedes()
+            productos = obtenerProductos()
+            context['datos'] = productos or []
+            context['MEDIA_URL'] = MEDIA_URL
+            context['error'] = f'Error al eliminar el producto: {str(e)}'
+            print(f"Context preparado después de excepción. Productos: {len(context['datos'])}")
+    else:
+        print(f"Método {request.method} - No es POST, mostrando lista sin mensajes")
+        # Si no es POST, solo mostrar la lista sin mensajes
+        context = get_context_with_sedes()
+        productos = obtenerProductos()
+        context['datos'] = productos or []
+        context['MEDIA_URL'] = MEDIA_URL
+        print(f"Context preparado para GET. Productos: {len(context['datos'])}")
     
-    return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
-
-def lista_sedes(request):
-    return render(request, 'ver_sedes.html')
+    # Siempre renderizar la lista de productos con el contexto (con o sin mensajes)
+    print(f"Renderizando template con context keys: {list(context.keys())}")
+    print(f"=== FIN eliminarProducto para producto: {producto_id} ===")
+    return render(request, 'admins/lista_productos.html', context)
 
 def ver_clientes(request):
     try:

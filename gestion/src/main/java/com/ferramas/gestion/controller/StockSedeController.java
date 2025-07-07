@@ -31,12 +31,13 @@ public class StockSedeController {
         return stockSedeRepository.save(stockSede);
     }
 
-   @PutMapping("/{idstock}")
-    public ResponseEntity<StockSede> actualizarStockSede(@PathVariable int idstock, @RequestBody StockSede stockSedeDetails) {
+    @PutMapping("/{idstock}")
+    public ResponseEntity<StockSede> actualizarStockSede(@PathVariable int idstock,
+            @RequestBody StockSede stockSedeDetails) {
         return stockSedeRepository.findById(idstock)
                 .map(stockSede -> {
-                    stockSede.setIdproducto(stockSedeDetails.getIdproducto());
-                    stockSede.setIdsede(stockSedeDetails.getIdsede());
+                    stockSede.setProducto(stockSedeDetails.getProducto());
+                    stockSede.setSede(stockSedeDetails.getSede());
                     stockSede.setStock(stockSedeDetails.getStock());
                     return ResponseEntity.ok(stockSedeRepository.save(stockSede));
                 })
@@ -55,17 +56,18 @@ public class StockSedeController {
 
     @GetMapping("/producto/{idProducto}")
     public List<StockSede> obtenerStockPorProducto(@PathVariable String idProducto) {
-        return stockSedeRepository.findByIdproducto(idProducto);
+        return stockSedeRepository.findByProductoIdproducto(idProducto);
     }
 
     @GetMapping("/sede/{idSede}")
     public List<StockSede> obtenerStockPorSede(@PathVariable int idSede) {
-        return stockSedeRepository.findByIdsede(idSede);
+        return stockSedeRepository.findBySedeIdsede(idSede);
     }
 
     @GetMapping("/producto/{idProducto}/sede/{idSede}")
-    public ResponseEntity<StockSede> obtenerStockProductoSede(@PathVariable String idProducto, @PathVariable int idSede) {
-        StockSede stockSede = stockSedeRepository.findByIdproductoAndIdsede(idProducto, idSede);
+    public ResponseEntity<StockSede> obtenerStockProductoSede(@PathVariable String idProducto,
+            @PathVariable int idSede) {
+        StockSede stockSede = stockSedeRepository.findByProductoIdproductoAndSedeIdsede(idProducto, idSede);
         return stockSede != null ? ResponseEntity.ok(stockSede) : ResponseEntity.notFound().build();
     }
 }

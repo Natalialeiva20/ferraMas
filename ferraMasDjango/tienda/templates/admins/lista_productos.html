@@ -46,6 +46,19 @@ Administrar Productos - FerraMas
                 </a>
             </div>
         </div>
+        {% if exito %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>{{ exito }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endif %}
     </div>
 
     <!-- Productos -->
@@ -55,7 +68,10 @@ Administrar Productos - FerraMas
             <div class="card h-100 producto-card">
                 <!-- Imagen -->
                 <div style="height: 200px; overflow: hidden;">
-                    {% if producto.idproducto == "MART001" %}
+                    
+                    {% if producto.imagen_url %}
+                        <img src="{{ producto.imagen_url }}"  class="card-img-top w-100 h-100" style="object-fit: cover;" alt="{{ producto.idproducto }}">
+                    {% elif producto.idproducto == "MART001" %}
                         <img src="{% static 'img/martillo_carpintero.jpg' %}" class="card-img-top w-100 h-100" style="object-fit: cover;" alt="Martillo">
                     {% elif producto.idproducto == "DEST001" %}
                         <img src="{% static 'img/destornillador.jpg' %}" class="card-img-top w-100 h-100" style="object-fit: cover;" alt="Destornillador">
@@ -154,49 +170,26 @@ function confirmarEliminacion(productoId, nombreProducto) {
 document.getElementById('btnConfirmarEliminar').addEventListener('click', function() {
     if (productoAEliminar) {
         eliminarProducto(productoAEliminar);
+        bootstrap.Modal.getInstance(document.getElementById('modalEliminar')).hide();
     }
 });
 
 function eliminarProducto(productoId) {
-    fetch(`/admin/productos/${productoId}/eliminar/`, {
+    fetch(`/admins/productos/${productoId}/eliminar/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCookie('csrftoken')
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            mostrarNotificacion(data.message, 'success');
-            setTimeout(() => {
-                location.reload();
-            }, 1500);
-        } else {
-            mostrarNotificacion(data.message, 'error');
-        }
-        bootstrap.Modal.getInstance(document.getElementById('modalEliminar')).hide();
+    .then(response => response.text())
+    .then(html => {
+        document.documentElement.innerHTML = html;
     })
     .catch(error => {
-        mostrarNotificacion('Error de conexión', 'error');
-        bootstrap.Modal.getInstance(document.getElementById('modalEliminar')).hide();
+        console.error('Error:', error);
+        alert('Error al eliminar el producto');
     });
-}
-
-function mostrarNotificacion(mensaje, tipo) {
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${tipo === 'success' ? 'success' : 'danger'} position-fixed`;
-    notification.style.cssText = 'top: 80px; right: 20px; z-index: 9999; min-width: 300px;';
-    notification.innerHTML = `
-        <i class="fas fa-${tipo === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
-        ${mensaje}
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
 }
 
 function getCookie(name) {

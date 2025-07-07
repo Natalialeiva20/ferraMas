@@ -3,29 +3,33 @@ package com.ferramas.gestion.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="cliente")
+@Table(name = "cliente")
 public class Cliente {
     @Id
-    @Column(name="rutcliente")
+    @Column(name = "rutcliente")
     private String rutcliente;
-    
-    @Column(name="nombrecliente")
+
+    @Column(name = "nombrecliente")
     private String nombrecliente;
-    
-    @Column(name="apellidocliente")
+
+    @Column(name = "apellidocliente")
     private String apellidocliente;
-    
-    @Column(name="idcomuna")
-    private int idcomuna;
+
+    // Foreign key relationship
+    @ManyToOne
+    @JoinColumn(name = "idcomuna", referencedColumnName = "idcomuna")
+    private Comuna comuna;
+
+    // private int idcomuna;
 
     public Cliente() {
     }
 
-    public Cliente(String rutcliente, String nombrecliente, String apellidocliente, int idcomuna) {
+    public Cliente(String rutcliente, String nombrecliente, String apellidocliente, Comuna comuna) {
         this.rutcliente = rutcliente;
         this.nombrecliente = nombrecliente;
         this.apellidocliente = apellidocliente;
-        this.idcomuna = idcomuna;
+        this.comuna = comuna;
     }
 
     public String getRutcliente() {
@@ -52,11 +56,11 @@ public class Cliente {
         this.apellidocliente = apellidocliente;
     }
 
-    public int getIdcomuna() {
-        return idcomuna;
+    public Comuna getComuna() {
+        return comuna;
     }
 
-    public void setIdcomuna(int idcomuna) {
-        this.idcomuna = idcomuna;
+    public void setComuna(Comuna comuna) {
+        this.comuna = comuna;
     }
 }

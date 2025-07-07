@@ -3,7 +3,7 @@ package com.ferramas.gestion.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="categoria")
+@Table(name = "categoria")
 public class Categoria {
     @Id
     private int idcategoria;
@@ -17,11 +17,11 @@ public class Categoria {
         this.nombrecategoria = nombrecategoria;
     }
 
-    public int getId() {
+    public int getIdcategoria() {
         return idcategoria;
     }
 
-    public void setId(int idcategoria) {
+    public void setIdcategoria(int idcategoria) {
         this.idcategoria = idcategoria;
     }
 

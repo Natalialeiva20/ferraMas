@@ -27,8 +27,14 @@ public class VentaController {
     }
 
     @PostMapping
-    public Venta crearVenta(@RequestBody Venta venta) {
-        return ventaRepository.save(venta);
+    public ResponseEntity<Venta> crearVenta(@RequestBody Venta venta) {
+        try {
+            // El numerodocumento se genera automáticamente
+            Venta ventaGuardada = ventaRepository.save(venta);
+            return ResponseEntity.status(201).body(ventaGuardada);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{numerodocumento}")
@@ -38,9 +44,9 @@ public class VentaController {
                     venta.setTipodocumento(ventaDetails.getTipodocumento());
                     venta.setFechaventa(ventaDetails.getFechaventa());
                     venta.setTotalventa(ventaDetails.getTotalventa());
-                    venta.setIdformapago(ventaDetails.getIdformapago());
-                    venta.setRutcliente(ventaDetails.getRutcliente());
-                    venta.setIdsede(ventaDetails.getIdsede());
+                    venta.setFormaPago(ventaDetails.getFormaPago());
+                    venta.setCliente(ventaDetails.getCliente());
+                    venta.setSede(ventaDetails.getSede());
                     return ResponseEntity.ok(ventaRepository.save(venta));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -58,11 +64,11 @@ public class VentaController {
 
     @GetMapping("/cliente/{rutCliente}")
     public List<Venta> obtenerVentasPorCliente(@PathVariable String rutCliente) {
-        return ventaRepository.findByRutcliente(rutCliente);
+        return ventaRepository.findByClienteRutcliente(rutCliente);
     }
 
     @GetMapping("/sede/{idSede}")
     public List<Venta> obtenerVentasPorSede(@PathVariable int idSede) {
-        return ventaRepository.findByIdsede(idSede);
+        return ventaRepository.findBySedeIdsede(idSede);
     }
 }

@@ -3,20 +3,24 @@ package com.ferramas.gestion.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="imagenproducto")
+@Table(name = "imagenproducto")
 public class ImagenProducto {
     @Id
     private int idimagen;
-    private String idproducto;
+    // private String idproducto;
     private String imagen;
     private String descripcion;
+
+    @ManyToOne
+    @JoinColumn(name = "idproducto", referencedColumnName = "idproducto", insertable = false, updatable = false)
+    private Producto producto;
 
     public ImagenProducto() {
     }
 
-    public ImagenProducto(int idimagen, String idproducto, String imagen, String descripcion) {
+    public ImagenProducto(int idimagen, Producto producto, String imagen, String descripcion) {
         this.idimagen = idimagen;
-        this.idproducto = idproducto;
+        this.producto = producto;
         this.imagen = imagen;
         this.descripcion = descripcion;
     }
@@ -29,12 +33,12 @@ public class ImagenProducto {
         this.idimagen = idimagen;
     }
 
-    public String getIdproducto() {
-        return idproducto;
+    public Producto getProducto() {
+        return producto;
     }
 
-    public void setIdproducto(String idproducto) {
-        this.idproducto = idproducto;
+    public void setProducto(Producto producto) {
+        this.producto = producto;
     }
 
     public String getImagen() {

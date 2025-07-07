@@ -12,7 +12,7 @@ urlpatterns = [
     path('seleccionar_sede/', views.seleccionar_sede, name='seleccionar_sede'),  
     path('cambiar-sede/', views.cambiar_sede_ajax, name='cambiar_sede_ajax'),
     path('anadirProducto/', views.anadirProducto, name='anadirProducto'),
-    path('eliminarProducto/', views.eliminarProducto, name='eliminarProducto'),
+    path('eliminarProducto/<str:producto_id>/', views.eliminarProducto, name='eliminarProducto'),
     path('modificarProducto/', views.modificarProducto, name='modificarProducto'),
     path('ver_anadir_producto/', views.ver_anadir_producto, name='ver_anadir_producto'),
 

@@ -37,7 +37,7 @@ public class ClienteController {
                 .map(cliente -> {
                     cliente.setNombrecliente(clienteDetails.getNombrecliente());
                     cliente.setApellidocliente(clienteDetails.getApellidocliente());
-                    cliente.setIdcomuna(clienteDetails.getIdcomuna());
+                    cliente.setComuna(clienteDetails.getComuna());
                     return ResponseEntity.ok(clienteRepository.save(cliente));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -55,6 +55,6 @@ public class ClienteController {
 
     @GetMapping("/comuna/{idComuna}")
     public List<Cliente> obtenerClientesPorComuna(@PathVariable int idComuna) {
-        return clienteRepository.findByIdcomuna(idComuna);
+        return clienteRepository.findByComunaIdcomuna(idComuna);
     }
 }

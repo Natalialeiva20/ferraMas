@@ -36,9 +36,9 @@ public class SedeController {
         return sedeRepository.findById(idsede)
                 .map(sede -> {
                     sede.setNombresede(sedeDetails.getNombresede());
-                    sede.setIdcomuna(sedeDetails.getIdcomuna());
-                    sede.setIdciudad(sedeDetails.getIdciudad());
-                    sede.setIdempleado(sedeDetails.getIdempleado());
+                    sede.setComuna(sedeDetails.getComuna());
+                    sede.setCiudad(sedeDetails.getCiudad());
+                    sede.setEmpleado(sedeDetails.getEmpleado());
                     return ResponseEntity.ok(sedeRepository.save(sede));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -56,11 +56,11 @@ public class SedeController {
 
     @GetMapping("/comuna/{idComuna}")
     public List<Sede> obtenerSedesPorComuna(@PathVariable int idComuna) {
-        return sedeRepository.findByIdcomuna(idComuna);
+        return sedeRepository.findByComunaIdcomuna(idComuna);
     }
 
     @GetMapping("/ciudad/{idCiudad}")
     public List<Sede> obtenerSedesPorCiudad(@PathVariable int idCiudad) {
-        return sedeRepository.findByIdciudad(idCiudad);
+        return sedeRepository.findByCiudadIdciudad(idCiudad);
     }
 }

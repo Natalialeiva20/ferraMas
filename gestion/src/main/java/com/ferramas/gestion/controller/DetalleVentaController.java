@@ -22,22 +22,27 @@ public class DetalleVentaController {
     }
 
     @PostMapping
-    public DetalleVenta crearDetalleVenta(@RequestBody DetalleVenta detalleVenta) {
-        return detalleVentaRepository.save(detalleVenta);
+    public ResponseEntity<DetalleVenta> crearDetalleVenta(@RequestBody DetalleVenta detalleVenta) {
+        try {
+            DetalleVenta detalleGuardado = detalleVentaRepository.save(detalleVenta);
+            return ResponseEntity.status(201).body(detalleGuardado);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/venta/{numeroDocumento}")
     public List<DetalleVenta> obtenerDetallesPorVenta(@PathVariable int numeroDocumento) {
-        return detalleVentaRepository.findByNumerodocumento(numeroDocumento);
+        return detalleVentaRepository.findByVentaNumerodocumento(numeroDocumento);
     }
 
     @GetMapping("/producto/{idProducto}")
     public List<DetalleVenta> obtenerDetallesPorProducto(@PathVariable String idProducto) {
-        return detalleVentaRepository.findByIdproducto(idProducto);
+        return detalleVentaRepository.findByProductoIdproducto(idProducto);
     }
 
     @GetMapping("/empleado/{idEmpleado}")
     public List<DetalleVenta> obtenerDetallesPorEmpleado(@PathVariable Integer idEmpleado) {
-        return detalleVentaRepository.findByIdempleado(idEmpleado);
+        return detalleVentaRepository.findByEmpleadoIdempleado(idEmpleado);
     }
 }

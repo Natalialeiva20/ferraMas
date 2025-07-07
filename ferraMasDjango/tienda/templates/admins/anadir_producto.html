@@ -41,7 +41,7 @@ Modificar Producto - FerraMas
         </div>
         {% endif %}
 
-        <form id="formModificarProducto" enctype="multipart/form-data">
+        <form id="anadirProducto" enctype="multipart/form-data">
             {% csrf_token %}
 
             <div class="row">
@@ -81,12 +81,12 @@ Modificar Producto - FerraMas
                             <i class="fas fa-list me-2"></i>Categoría *
                         </label>
                         <select class="form-control" id="idcategoria" name="idcategoria" required>
-                            <option value="">Seleccionar categoría</option>
-                                {% for categoria in categorias %}
-                                    <option value="{{ categoria.id }}" {% if categoria.id == producto.idcategoria %}selected{% endif %}>
-                                        {{ categoria.nombrecategoria }}
-                                    </option>
-                                {% endfor %}
+                            <option value="1" disabled selected>Seleccionar categoría</option> <!-- Agregado 'disabled' -->
+                            {% for categoria in categorias %}
+                                <option value="{{ categoria.id }}" {% if categoria.id == producto.id %}selected{% endif %}>
+                                    {{ categoria.nombrecategoria }}
+                                </option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
@@ -97,7 +97,7 @@ Modificar Producto - FerraMas
                             <i class="fas fa-map-marker-alt me-2"></i>Sede *
                         </label>
                         <select class="form-control" id="idsede" name="idsede" required>
-                            <option value="" selected>Seleccionar sede</option>
+                            <option value="" selected disabled>Seleccionar sede</option>
                             {% for sede in sedes %}
                             <option value="{{ sede.idsede }}" {% if sede.idsede == producto.idsede %}selected{% endif %}>
                                 {{ sede.nombresede }}
@@ -168,5 +168,5 @@ Modificar Producto - FerraMas
 {% endblock %}
 
 {% block js %}
-<script src="{% static 'js/admins/anadir_producto.js' %}"></script> 
+<script src="{% static 'js/admin/anadir_producto.js' %}"></script>
 {% endblock %}

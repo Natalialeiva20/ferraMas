@@ -3,7 +3,7 @@ package com.ferramas.gestion.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="detalleventa")
+@Table(name = "detalleventa")
 @IdClass(DetalleVentaId.class)
 public class DetalleVenta {
     @Id
@@ -11,16 +11,30 @@ public class DetalleVenta {
     @Id
     private String idproducto;
     private int cantidad;
-    private Integer idempleado;
+
+    @ManyToOne
+    @JoinColumn(name = "numerodocumento", referencedColumnName = "numerodocumento", insertable = false, updatable = false)
+    private Venta venta;
+
+    @ManyToOne
+    @JoinColumn(name = "idproducto", referencedColumnName = "idproducto", insertable = false, updatable = false)
+    private Producto producto;
+
+    @ManyToOne
+    @JoinColumn(name = "idempleado", referencedColumnName = "idempleado")
+    private Empleado empleado;
+
+    // Keep primitive field for compatibility
+    // private Integer idempleado;
 
     public DetalleVenta() {
     }
 
-    public DetalleVenta(int numerodocumento, String idproducto, int cantidad, Integer idempleado) {
+    public DetalleVenta(int numerodocumento, Producto producto, int cantidad, Empleado empleado) {
         this.numerodocumento = numerodocumento;
-        this.idproducto = idproducto;
+        this.producto = producto;
         this.cantidad = cantidad;
-        this.idempleado = idempleado;
+        this.empleado = empleado;
     }
 
     public int getNumerodocumento() {
@@ -31,14 +45,6 @@ public class DetalleVenta {
         this.numerodocumento = numerodocumento;
     }
 
-    public String getIdproducto() {
-        return idproducto;
-    }
-
-    public void setIdproducto(String idproducto) {
-        this.idproducto = idproducto;
-    }
-
     public int getCantidad() {
         return cantidad;
     }
@@ -47,11 +53,27 @@ public class DetalleVenta {
         this.cantidad = cantidad;
     }
 
-    public Integer getIdempleado() {
-        return idempleado;
+    public Venta getVenta() {
+        return venta;
     }
 
-    public void setIdempleado(Integer idempleado) {
-        this.idempleado = idempleado;
+    public void setVenta(Venta venta) {
+        this.venta = venta;
+    }
+
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+    }
+
+    public Empleado getEmpleado() {
+        return empleado;
+    }
+
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
     }
 }

@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface DireccionRepository extends JpaRepository<Direccion, Integer> {
     List<Direccion> findByRutcliente(String rutcliente);
-    List<Direccion> findByIdcomuna(int idcomuna);
+
+    List<Direccion> findByComunaIdcomuna(int idcomuna);
 }

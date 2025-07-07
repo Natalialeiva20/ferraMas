@@ -5,6 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ProductoRepository extends JpaRepository<Producto, String> {
-    List<Producto> findByIdcategoria(int idcategoria);
-    List<Producto> findByIdsede(int idsede);
+    List<Producto> findByCategoriaIdcategoria(int idcategoria);
+
+    List<Producto> findByCategoriaIdcategoriaAndSedeIdsede(int idcategoria, int idsede);
+
+    List<Producto> findBySedeIdsede(int idsede);
 }

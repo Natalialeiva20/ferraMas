@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface SedeRepository extends JpaRepository<Sede, Integer> {
-    List<Sede> findByIdcomuna(int idcomuna);
-    List<Sede> findByIdciudad(int idciudad);
+    List<Sede> findByComunaIdcomuna(int idcomuna);
+
+    List<Sede> findByCiudadIdciudad(int idciudad);
 }

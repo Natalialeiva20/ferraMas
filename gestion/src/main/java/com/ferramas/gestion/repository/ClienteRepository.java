@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, String> {
-    List<Cliente> findByIdcomuna(int idcomuna);
+    List<Cliente> findByComunaIdcomuna(int idcomuna);
 }

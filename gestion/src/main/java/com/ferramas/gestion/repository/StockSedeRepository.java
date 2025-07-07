@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface StockSedeRepository extends JpaRepository<StockSede, Integer> {
-    List<StockSede> findByIdproducto(String idproducto);
-    List<StockSede> findByIdsede(int idsede);
-    StockSede findByIdproductoAndIdsede(String idproducto, int idsede);
+    List<StockSede> findByProductoIdproducto(String idproducto);
+
+    List<StockSede> findBySedeIdsede(int idsede);
+
+    StockSede findByProductoIdproductoAndSedeIdsede(String idproducto, int idsede);
 }

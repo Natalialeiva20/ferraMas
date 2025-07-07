@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface DetalleVentaRepository extends JpaRepository<DetalleVenta, DetalleVentaId> {
-    List<DetalleVenta> findByNumerodocumento(int numerodocumento);
-    List<DetalleVenta> findByIdproducto(String idproducto);
-    List<DetalleVenta> findByIdempleado(Integer idempleado);
+    List<DetalleVenta> findByVentaNumerodocumento(int numerodocumento);
+
+    List<DetalleVenta> findByProductoIdproducto(String idproducto);
+
+    List<DetalleVenta> findByEmpleadoIdempleado(Integer idempleado);
 }

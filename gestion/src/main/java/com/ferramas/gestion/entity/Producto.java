@@ -1,39 +1,50 @@
 package com.ferramas.gestion.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 
 @Entity
-@Table(name="producto")
+@Table(name = "producto")
 public class Producto {
     @Id
-    @Column(name="idproducto")
+    @Column(name = "idproducto")
     private String idproducto;
-    
-    @Column(name="nombre")
-    private String nombre;
-    
-    @Column(name="precio")
-    private int precio;
-    
-    @Column(name="stockminimo")
-    private int stockminimo;
-    
-    @Column(name="idcategoria")
-    private int idcategoria;
-    
-    @Column(name="idsede")
-    private int idsede;
 
+    @Column(name = "nombre")
+    private String nombre;
+
+    @Column(name = "precio")
+    private int precio;
+
+    @Column(name = "stockminimo")
+    private int stockminimo;
+
+    // Foreign key relationships
+    @ManyToOne
+    @JoinColumn(name = "idcategoria", referencedColumnName = "idcategoria")
+    private Categoria categoria;
+
+    @ManyToOne
+    @JoinColumn(name = "idsede", referencedColumnName = "idsede")
+    private Sede sede;
+
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<ImagenProducto> imagenes;
+
+    // private int idcategoria;
+    // private int idsede;
     public Producto() {
     }
 
-    public Producto(String idproducto, String nombre, int precio, int stockminimo, int idcategoria, int idsede) {
+    public Producto(String idproducto, String nombre, int precio, int stockminimo, Categoria categoria, Sede sede) {
         this.idproducto = idproducto;
         this.nombre = nombre;
         this.precio = precio;
         this.stockminimo = stockminimo;
-        this.idcategoria = idcategoria;
-        this.idsede = idsede;
+        this.categoria = categoria;
+        this.sede = sede;
     }
 
     // Getters y setters
@@ -69,19 +80,27 @@ public class Producto {
         this.stockminimo = stockminimo;
     }
 
-    public int getIdcategoria() {
-        return idcategoria;
+    public Categoria getCategoria() {
+        return categoria;
     }
 
-    public void setIdcategoria(int idcategoria) {
-        this.idcategoria = idcategoria;
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
-    public int getIdsede() {
-        return idsede;
+    public Sede getSede() {
+        return sede;
     }
 
-    public void setIdsede(int idsede) {
-        this.idsede = idsede;
+    public void setSede(Sede sede) {
+        this.sede = sede;
+    }
+
+    public List<ImagenProducto> getImagenes() {
+        return imagenes;
+    }
+
+    public void setImagenes(List<ImagenProducto> imagenes) {
+        this.imagenes = imagenes;
     }
 }

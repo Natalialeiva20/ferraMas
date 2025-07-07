@@ -32,14 +32,15 @@ public class DireccionController {
     }
 
     @PutMapping("/{iddireccion}")
-    public ResponseEntity<Direccion> actualizarDireccion(@PathVariable int iddireccion, @RequestBody Direccion direccionDetails) {
+    public ResponseEntity<Direccion> actualizarDireccion(@PathVariable int iddireccion,
+            @RequestBody Direccion direccionDetails) {
         return direccionRepository.findById(iddireccion)
                 .map(direccion -> {
                     direccion.setRutcliente(direccionDetails.getRutcliente());
                     direccion.setCalle(direccionDetails.getCalle());
                     direccion.setNumerocasa(direccionDetails.getNumerocasa());
                     direccion.setVilla(direccionDetails.getVilla());
-                    direccion.setIdcomuna(direccionDetails.getIdcomuna());
+                    direccion.setComuna(direccionDetails.getComuna());
                     return ResponseEntity.ok(direccionRepository.save(direccion));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -62,6 +63,6 @@ public class DireccionController {
 
     @GetMapping("/comuna/{idComuna}")
     public List<Direccion> obtenerDireccionesPorComuna(@PathVariable int idComuna) {
-        return direccionRepository.findByIdcomuna(idComuna);
+        return direccionRepository.findByComunaIdcomuna(idComuna);
     }
 }

@@ -4,24 +4,37 @@ package com.ferramas.gestion.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="sede")
+@Table(name = "sede")
 public class Sede {
     @Id
     private int idsede;
     private String nombresede;
-    private int idcomuna;
-    private int idciudad;
-    private int idempleado;
+
+    // Foreign key relationships
+    @ManyToOne
+    @JoinColumn(name = "idcomuna", referencedColumnName = "idcomuna")
+    private Comuna comuna;
+
+    @ManyToOne
+    @JoinColumn(name = "idciudad", referencedColumnName = "idciudad")
+    private Ciudad ciudad;
+
+    @ManyToOne
+    @JoinColumn(name = "idempleado", referencedColumnName = "idempleado")
+    private Empleado empleado;
+
+    // Keep primitive fields for compatibility
+    // private int idcomuna;
+    // private int idempleado;
 
     public Sede() {
     }
 
-    public Sede(int idsede, String nombresede, int idcomuna, int idciudad, int idempleado) {
+    public Sede(int idsede, String nombresede, Comuna comuna, Empleado empleado) {
         this.idsede = idsede;
         this.nombresede = nombresede;
-        this.idcomuna = idcomuna;
-        this.idciudad = idciudad;
-        this.idempleado = idempleado;
+        this.comuna = comuna;
+        this.empleado = empleado;
     }
 
     public int getIdsede() {
@@ -40,27 +53,28 @@ public class Sede {
         this.nombresede = nombresede;
     }
 
-    public int getIdcomuna() {
-        return idcomuna;
+    public Comuna getComuna() {
+        return comuna;
     }
 
-    public void setIdcomuna(int idcomuna) {
-        this.idcomuna = idcomuna;
+    public void setComuna(Comuna comuna) {
+        this.comuna = comuna;
     }
 
-    public int getIdciudad() {
-        return idciudad;
+    public Ciudad getCiudad() {
+        return ciudad;
     }
 
-    public void setIdciudad(int idciudad) {
-        this.idciudad = idciudad;
+    public void setCiudad(Ciudad ciudad) {
+        this.ciudad = ciudad;
     }
 
-    public int getIdempleado() {
-        return idempleado;
+    public Empleado getEmpleado() {
+        return empleado;
     }
 
-    public void setIdempleado(int idempleado) {
-        this.idempleado = idempleado;
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
     }
+
 }

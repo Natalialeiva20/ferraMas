@@ -3,19 +3,26 @@ package com.ferramas.gestion.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="comuna")
+@Table(name = "comuna")
 public class Comuna {
     @Id
     private int idcomuna;
-    private int idciudad;
     private String nombrecomuna;
+
+    // Foreign key relationship
+    @ManyToOne
+    @JoinColumn(name = "idciudad", referencedColumnName = "idciudad")
+    private Ciudad ciudad;
+
+    // Keep primitive field for compatibility
+    // private int idciudad;
 
     public Comuna() {
     }
 
-    public Comuna(int idcomuna, int idciudad, String nombrecomuna) {
+    public Comuna(int idcomuna, Ciudad ciudad, String nombrecomuna) {
         this.idcomuna = idcomuna;
-        this.idciudad = idciudad;
+        this.ciudad = ciudad;
         this.nombrecomuna = nombrecomuna;
     }
 
@@ -27,19 +34,19 @@ public class Comuna {
         this.idcomuna = idcomuna;
     }
 
-    public int getIdciudad() {
-        return idciudad;
-    }
-
-    public void setIdciudad(int idciudad) {
-        this.idciudad = idciudad;
-    }
-
     public String getNombrecomuna() {
         return nombrecomuna;
     }
 
     public void setNombrecomuna(String nombrecomuna) {
         this.nombrecomuna = nombrecomuna;
+    }
+
+    public Ciudad getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(Ciudad ciudad) {
+        this.ciudad = ciudad;
     }
 }

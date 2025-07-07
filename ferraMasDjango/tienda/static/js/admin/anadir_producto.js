@@ -1,14 +1,31 @@
-document.getElementById('formModificarProducto').addEventListener('submit', function (e) {
-    e.preventDefault();
+// Manejar tanto formularios de añadir como de modificar
+const formAnadir = document.getElementById('anadirProducto');
+const formModificar = document.getElementById('formModificarProducto');
 
-    const formData = new FormData(this);
-    const submitBtn = this.querySelector('button[type="submit"]');
+if (formAnadir) {
+    formAnadir.addEventListener('submit', function (e) {
+        e.preventDefault();
+        manejarEnvioFormulario(this, '/admins/productos/crear/');
+    });
+}
+
+if (formModificar) {
+    formModificar.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const productoId = '{{ producto.idproducto }}';
+        manejarEnvioFormulario(this, `/admins/productos/${productoId}/actualizar/`);
+    });
+}
+
+function manejarEnvioFormulario(form, url) {
+    const formData = new FormData(form);
+    const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
 
-    submitBtn.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Actualizando...';
+    submitBtn.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Procesando...';
     submitBtn.disabled = true;
 
-    fetch('/admin/productos/{{ producto.idproducto }}/actualizar/', {
+    fetch(url, {
         method: 'POST',
         body: formData,
         headers: {
@@ -20,7 +37,7 @@ document.getElementById('formModificarProducto').addEventListener('submit', func
             if (data.success) {
                 mostrarNotificacion(data.message, 'success');
                 setTimeout(() => {
-                    window.location.href = '/admin/productos/';
+                    window.location.href = '/admins/productos/';
                 }, 1500);
             } else {
                 mostrarNotificacion(data.message, 'error');
@@ -29,19 +46,20 @@ document.getElementById('formModificarProducto').addEventListener('submit', func
             }
         })
         .catch(error => {
+            console.error('Error:', error);
             mostrarNotificacion('Error de conexión', 'error');
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         });
-});
+}
 
 function mostrarNotificacion(mensaje, tipo) {
     const notification = document.createElement('div');
     notification.className = `alert alert-${tipo === 'success' ? 'success' : 'danger'} position-fixed`;
     notification.style.cssText = 'top: 80px; right: 20px; z-index: 9999; min-width: 300px;';
     notification.innerHTML = `
-    <i class="fas fa-${tipo === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
-    ${mensaje}
+        <i class="fas fa-${tipo === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+        ${mensaje}
     `;
 
     document.body.appendChild(notification);
@@ -65,31 +83,3 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-    // Obtén los valores actuales del producto desde atributos data o variables de Django
-    const categoriaSeleccionada = "{{ producto.idcategoria |default: '' }}";
-    const sedeSeleccionada = "{{ producto.idsede |default: '' }}";
-
-    // Selecciona el select de categoría y sede
-    const selectCategoria = document.getElementById('idcategoria');
-    const selectSede = document.getElementById('idsede');
-
-    if (selectCategoria && categoriaSeleccionada) {
-        for (let option of selectCategoria.options) {
-            if (option.value == categoriaSeleccionada) {
-                option.selected = true;
-                break;
-            }
-        }
-    }
-
-    if (selectSede && sedeSeleccionada) {
-        for (let option of selectSede.options) {
-            if (option.value == sedeSeleccionada) {
-                option.selected = true;
-                break;
-            }
-        }
-    }
-});
