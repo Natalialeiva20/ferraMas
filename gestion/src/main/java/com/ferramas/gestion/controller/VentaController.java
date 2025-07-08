@@ -29,7 +29,6 @@ public class VentaController {
     @PostMapping
     public ResponseEntity<Venta> crearVenta(@RequestBody Venta venta) {
         try {
-            // El numerodocumento se genera automáticamente
             Venta ventaGuardada = ventaRepository.save(venta);
             return ResponseEntity.status(201).body(ventaGuardada);
         } catch (Exception e) {
@@ -44,7 +43,7 @@ public class VentaController {
                     venta.setTipodocumento(ventaDetails.getTipodocumento());
                     venta.setFechaventa(ventaDetails.getFechaventa());
                     venta.setTotalventa(ventaDetails.getTotalventa());
-                    venta.setFormaPago(ventaDetails.getFormaPago());
+                    venta.setFormapago(ventaDetails.getFormapago());
                     venta.setCliente(ventaDetails.getCliente());
                     venta.setSede(ventaDetails.getSede());
                     return ResponseEntity.ok(ventaRepository.save(venta));
@@ -70,5 +69,13 @@ public class VentaController {
     @GetMapping("/sede/{idSede}")
     public List<Venta> obtenerVentasPorSede(@PathVariable int idSede) {
         return ventaRepository.findBySedeIdsede(idSede);
+    }
+
+    @GetMapping("/ultimo-numero/")
+    public ResponseEntity<?> obtenerUltimoNumeroDocumento() {
+        Integer ultimo = ventaRepository.findMaxNumerodocumento();
+        if (ultimo == null)
+            ultimo = 0;
+        return ResponseEntity.ok().body(java.util.Collections.singletonMap("ultimo_numero", ultimo));
     }
 }

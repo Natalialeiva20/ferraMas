@@ -3,7 +3,7 @@ package com.ferramas.gestion.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="formapago")
+@Table(name = "formapago")
 public class FormaPago {
     @Id
     private int idformapago;

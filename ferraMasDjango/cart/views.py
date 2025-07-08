@@ -139,52 +139,130 @@ def retorno_pago(request):
         print("Resultado commit Transbank:", result)
         orden_datos = request.session.get('orden_datos', {})
         print("Datos de la orden recuperados de sesión:", orden_datos)
+
         if result.get('status') == 'AUTHORIZED':
             print("Pago autorizado, creando venta...")
+            try:
+                formapago_response = requests.get("http://localhost:8089/api/formas-pago/2")
+                if formapago_response.status_code != 200:
+                    print("ERROR: No se pudo obtener FormaPago")
+                    return render(request, 'carrito/pago_fallido.html', {'response': {'error': 'Error configurando pago'}})
+                formapago = formapago_response.json()
+                
+                formapago_limpio = {
+                    "idformapago": formapago.get("idformapago"),
+                    "nombreformapago": formapago.get("nombreformapago"),
+                    "descripcion": formapago.get("descripcion")
+                }
+                print("FormaPago limpio:", formapago_limpio)
+            except Exception as e:
+                print(f"ERROR obteniendo FormaPago: {e}")
+                return render(request, 'carrito/pago_fallido.html', {'response': {'error': 'Error obteniendo forma de pago'}})
+            
+            rutcliente = "12345678-9"
+            try:
+                cliente_response = requests.get(f"http://localhost:8089/api/clientes/{rutcliente}")
+                if cliente_response.status_code == 404:
+                    print("Cliente no existe, creando cliente temporal...")
+                    cliente_payload = {
+                        "rutcliente": rutcliente,
+                        "nombrecliente": "Cliente",
+                        "apellidocliente": "Temporal",
+                        "comuna": {"idcomuna": 1}
+                    }
+                    cliente_create_response = requests.post("http://localhost:8089/api/clientes/", json=cliente_payload)
+                    if cliente_create_response.status_code == 201:
+                        cliente = cliente_create_response.json()
+                        print("Cliente temporal creado:", cliente)
+                    else:
+                        print("ERROR creando cliente:", cliente_create_response.text)
+                        return render(request, 'carrito/pago_fallido.html', {'response': {'error': 'Error creando cliente'}})
+                elif cliente_response.status_code == 200:
+                    cliente = cliente_response.json()
+                    print("Cliente existente obtenido:", cliente)
+                else:
+                    print("ERROR obteniendo cliente:", cliente_response.text)
+                    return render(request, 'carrito/pago_fallido.html', {'response': {'error': 'Error obteniendo cliente'}})
+            except Exception as e:
+                print(f"ERROR con cliente: {e}")
+                return render(request, 'carrito/pago_fallido.html', {'response': {'error': 'Error procesando cliente'}})
+            
+            idsede = request.session.get('sede_seleccionada', 1)
+            try:
+                sede_response = requests.get(f"http://localhost:8089/api/sedes/{idsede}")
+                if sede_response.status_code != 200:
+                    print("ERROR obteniendo sede:", sede_response.text)
+                    return render(request, 'carrito/pago_fallido.html', {'response': {'error': 'Error obteniendo sede'}})
+                sede = sede_response.json()
+                print("Sede obtenida:", sede)
+            except Exception as e:
+                print(f"ERROR obteniendo sede: {e}")
+                return render(request, 'carrito/pago_fallido.html', {'response': {'error': 'Error obteniendo sede'}})
+
+            nuevo_numero = obtener_ultimo_numerodocumento() + 1
+
             venta_payload = {
                 "tipodocumento": "BOLETA",
                 "fechaventa": datetime.now().strftime("%Y-%m-%d"),
-                "totalventa": orden_datos.get('total'),
-                "idformapago": 1,
-                "rutcliente": "12345678-9",
-                "idsede": request.session.get('sede_seleccionada', 1)
+                "totalventa": int(orden_datos.get('total', 0)),
+                "formapago": {"idformapago": formapago_limpio["idformapago"]},
+                "cliente": {"rutcliente": cliente["rutcliente"]},
+                "sede": {"idsede": sede["idsede"]}
             }
+            
             print("Payload para /api/ventas/:", venta_payload)
             venta_response = requests.post("http://localhost:8089/api/ventas/", json=venta_payload)
             print("Respuesta de /api/ventas/:", venta_response.status_code, venta_response.text)
+
             if venta_response.status_code == 201:
                 venta = venta_response.json()
                 print("Venta creada:", venta)
-                numerodocumento = venta.get("numerodocumento") or venta.get("id") or venta.get("idventa")
+                numerodocumento = venta.get("numerodocumento", nuevo_numero)
                 print("Numero documento obtenido:", numerodocumento)
+
                 if numerodocumento is not None:
                     for item in orden_datos.get('carrito', []):
-                        detalle_payload = {
-                            "numerodocumento": numerodocumento,
-                            "idproducto": item['id'],
-                            "cantidad": item['cantidad'],
-                            "idempleado": None
-                        }
-                        print("Payload para /api/detalle-venta/:", detalle_payload)
-                        detalle_response = requests.post("http://localhost:8089/api/detalle-venta/", json=detalle_payload)
-                        print("Detalle venta:", detalle_payload, detalle_response.status_code, detalle_response.text)
-                        if detalle_response.status_code != 201:
-                            print(f"ERROR guardando detalle de venta para producto {item['id']}: {detalle_response.text}")
+                        try:
+                            producto_response = requests.get(f"http://localhost:8089/api/productos/{item['id']}")
+                            if producto_response.status_code == 200:
+                                producto = producto_response.json()
+                                
+                                detalle_payload = {
+                                    "numerodocumento": numerodocumento,
+                                    "idproducto": item['id'],
+                                    "cantidad": item['cantidad'],
+                                    "venta": venta,
+                                    "producto": producto,
+                                    "empleado": None
+                                }
+                                print("Payload para /api/detalle-venta/:", detalle_payload)
+                                detalle_response = requests.post("http://localhost:8089/api/detalle-venta/", json=detalle_payload)
+                                print("Detalle venta:", detalle_response.status_code, detalle_response.text)
+                                
+                                if detalle_response.status_code != 201:
+                                    print(f"ERROR guardando detalle de venta para producto {item['id']}: {detalle_response.text}")
+                            else:
+                                print(f"ERROR: No se pudo obtener producto {item['id']}")
+                        except Exception as e:
+                            print(f"ERROR procesando detalle para producto {item['id']}: {e}")
                 else:
                     print("ERROR: No se obtuvo numerodocumento de la venta:", venta)
             else:
                 print("ERROR guardando venta:", venta_response.text)
-            # Limpiar carrito y sesión de orden
+                return render(request, 'carrito/pago_fallido.html', {'response': result})
+            
             print("Limpiando carrito y sesión de orden...")
             request.session['cart'] = {}
             if 'orden_datos' in request.session:
                 del request.session['orden_datos']
             print("=== FIN retorno_pago (éxito) ===")
+
             return render(request, 'carrito/pago_exitoso.html', {
                 'response': result,
                 'orden': orden_datos.get('buy_order'),
                 'total': orden_datos.get('total'),
-                'carrito': orden_datos.get('carrito', [])
+                'carrito': orden_datos.get('carrito', []),
+                'numerodocumento': nuevo_numero
             })
         else:
             print("ERROR: Pago no autorizado o fallido:", result)
@@ -194,3 +272,16 @@ def retorno_pago(request):
         print("EXCEPCIÓN en retorno_pago:", str(e))
         print("=== FIN retorno_pago (excepción) ===")
         return render(request, 'carrito/pago_fallido.html', {'response': {'error': str(e)}})
+    
+def obtener_ultimo_numerodocumento():
+    try:
+        resp = requests.get("http://localhost:8089/api/ventas/ultimo-numero/")
+        if resp.status_code == 200:
+            data = resp.json()
+            return data.get("ultimo_numero", 0)
+        else:
+            print("No se pudo obtener el último numerodocumento, usando 0")
+            return 0
+    except Exception as e:
+        print(f"Error obteniendo último numerodocumento: {e}")
+        return 0

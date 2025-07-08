@@ -14,7 +14,6 @@ public class Venta {
     private LocalDate fechaventa;
     private int totalventa;
 
-    // Foreign key relationships
     @ManyToOne
     @JoinColumn(name = "idformapago", referencedColumnName = "idformapago")
     private FormaPago formapago;
@@ -78,11 +77,11 @@ public class Venta {
         this.totalventa = totalventa;
     }
 
-    public FormaPago getFormaPago() {
+    public FormaPago getFormapago() {
         return formapago;
     }
 
-    public void setFormaPago(FormaPago formapago) {
+    public void setFormapago(FormaPago formapago) {
         this.formapago = formapago;
     }
 
